@@ -3,8 +3,8 @@ package com.mygdx.game;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class WorldTime {
-    private int hours = 0;
-    private float minutes = 0;
+    private int hours;
+    private float minutes;
 
     public WorldTime(String time){
         String h = time.substring(0, 2);

@@ -211,10 +211,7 @@ public class Level_System implements Screen {
 
         saves = new Saves(world, unit, levelStorage.npc, items, UI, playerCamera);
 
-        if (!Const.newGame) {
-            System.out.println("sdjfhk");
-            saves.Load();
-        }
+        if (!Const.newGame) saves.Load();
 
         gameController = new GameController[6];
         gameController[0] = new GameController(GameController.Direction.RIGHT);

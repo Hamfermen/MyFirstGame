@@ -37,6 +37,8 @@ public class UI extends Actor {
         text_score = new BitmapFont(Gdx.files.internal("font.fnt"));
         text_score.getData().setScale(1, 1);
 
+        if (Const.newGame) time = "0800";
+
         worldTime = new WorldTime(time);
     }
 
