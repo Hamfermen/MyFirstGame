@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import java.util.List;
 
 public class Dialog {
-    private List<String> dialog;
+    public List<String> dialog;
     private List<Texture> dialogImage;
-    private int dialogPos;
+    public int dialogPos;
 
     public Dialog(List<String> dialog, List<Texture> dialogImage, int dialogPos){
         this.dialog = dialog;

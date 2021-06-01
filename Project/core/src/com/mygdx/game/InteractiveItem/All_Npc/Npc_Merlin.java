@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Const;
 import com.mygdx.game.Dialog;
+import com.mygdx.game.GameController;
 import com.mygdx.game.MyPreference;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class Npc_Merlin extends Npc {
 
     private float stateTimer;
 
-    private int dialogPos;
+    public int dialogPos;
 
     public Dialog dialog;
 
@@ -74,22 +75,18 @@ public class Npc_Merlin extends Npc {
         MerlinState = new Animation(0.1f, frames);
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - Const.playerX / 2 * Const.Unit_Scale, body.getPosition().y - Const.playerY / 2 * Const.Unit_Scale, 80 * Const.Unit_Scale, 130 * Const.Unit_Scale);
-    }
-
     public void MerlinUpdate() {
         if (NpcInteract) {
-            if (!Const.freeze && Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-                if (dialogPos <= DialogPos) {
+            if (!Const.freeze && (Gdx.input.isKeyJustPressed(Input.Keys.E) || GameController.interact)) {
+                GameController.interact = false;
+                if (dialogPos < Merlin_dialog.size()){
                     dialogStarted = true;
                     dialogPos++;
                 }
                 if (dialogPos == Merlin_dialog.size()) dialogStarted = false;
                 dialog.nextDialog();
             }
-        } else dialogStarted = false;
+        }
     }
 
     private void createMerlin(World world, Vector2 pos, String bodyName) {
@@ -108,6 +105,11 @@ public class Npc_Merlin extends Npc {
         box.dispose();
 
         body.setUserData(bodyName);
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - Const.playerX / 2 * Const.Unit_Scale, body.getPosition().y - Const.playerY / 2 * Const.Unit_Scale, 80 * Const.Unit_Scale, 130 * Const.Unit_Scale);
     }
 
     private TextureRegion getFrame(float delta) {
@@ -132,14 +134,24 @@ public class Npc_Merlin extends Npc {
     private void setDialog() {
         Merlin_dialog = new ArrayList<String>();
         Merlin_dialog.add("");
-        Merlin_dialog.add("Hello");
-        Merlin_dialog.add("I`m Merlin");
+        Merlin_dialog.add("Наконец-то ты добрался до сюда.");
+        Merlin_dialog.add("Сколько у меня осталось времени?");
+        Merlin_dialog.add("До заката солнца остался час, после заката у тебя \n будет ещё час, чтобы добраться до Элизабет.");
+        Merlin_dialog.add("Где сейчас Элизабет?");
+        Merlin_dialog.add("Тебе нужно пройти через лес и поднятся на \n небесный остров.");
+        Merlin_dialog.add("Хорошо не буду терять времени.");
+        Merlin_dialog.add("Будь осторожен!");
     }
 
     private void setDialogImage() {
         Merlin_dialogImage = new ArrayList<Texture>();
         Merlin_dialogImage.add(new Texture("DialogImage\\merlin.png"));
-        Merlin_dialogImage.add(new Texture("DialogImage\\merlin.png"));
         Merlin_dialogImage.add(new Texture("DialogImage\\merlin1.png"));
+        Merlin_dialogImage.add(new Texture("DialogImage\\eskanor_sf_1.png"));
+        Merlin_dialogImage.add(new Texture("DialogImage\\merlin.png"));
+        Merlin_dialogImage.add(new Texture("DialogImage\\eskanor_sf_4.png"));
+        Merlin_dialogImage.add(new Texture("DialogImage\\merlin.png"));
+        Merlin_dialogImage.add(new Texture("DialogImage\\eskanor_sf_1.png"));
+        Merlin_dialogImage.add(new Texture("DialogImage\\merlin2.png"));
     }
 }

@@ -1,7 +1,9 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.Screens.Info.Eskanor_Info;
@@ -11,6 +13,7 @@ import com.mygdx.game.Screens.Levels.Levels_Storage;
 import com.mygdx.game.Screens.MainMenuScreen;
 import com.mygdx.game.Screens.MenuScreen;
 import com.mygdx.game.Screens.OptionsScreen;
+import com.mygdx.game.Screens.ToBeContinuedScreen;
 
 import java.util.HashMap;
 
@@ -23,10 +26,13 @@ public class MainClass extends Game {
 	public MenuScreen menuScreen;
 	public Merlin_Info merlin_info;
 	public Eskanor_Info eskanor_info;
+	public ToBeContinuedScreen toBeContinuedScreen;
 
 	private HashMap<String, TextureRegion> words;
 	private Texture wordsTexture;
 	private TextureRegion wordTexture;
+
+	private Music music;
 
 	private Screen screenForChange = null;
 
@@ -37,8 +43,8 @@ public class MainClass extends Game {
 		createWords();
 		myPreference = new MyPreference();
 		//MyPreference.pref.clear();
-		Const.levels.add(new Levels_Storage("Level1tmx", true, "Mael"));
-		Const.levels.add(new Levels_Storage("level2", false, "Merlin"));
+		Const.levels.add(new Levels_Storage("Level1tmx", true, "Merlin"));
+		Const.levels.add(new Levels_Storage("Level2tmx", false, "Mael"));
 
 		optionsScreen = new OptionsScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
@@ -46,6 +52,7 @@ public class MainClass extends Game {
 		menuScreen = new MenuScreen(this);
 		merlin_info = new Merlin_Info(words, this);
 		eskanor_info = new Eskanor_Info(words, this);
+		toBeContinuedScreen = new ToBeContinuedScreen(this);
 
 		setScreen(mainMenuScreen);
 	}

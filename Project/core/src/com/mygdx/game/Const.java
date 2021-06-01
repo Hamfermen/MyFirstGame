@@ -24,11 +24,13 @@ public class Const {
     public final static float SizeX = Gdx.graphics.getWidth() / 1280f;
     public final static float SizeY = Gdx.graphics.getHeight() / 720f;
 
-    public static final float Unit_Scale = 1f / 200f;
+    public static final float Unit_Scale = 1f / ((Gdx.graphics.getWidth() * Gdx.graphics.getHeight()) / 4608);
     public static final float TiledMap_Scale = Unit_Scale;
 
-    public final static float playerX = 64f * SizeX, playerY = 128f * SizeY;
-    public final static float MaelX = 180f * SizeX, MaelY = 140f * SizeY;
+    public final static float playerX = 64f, playerY = 128f;
+    public final static float MaelX = 180f, MaelY = 180f;
+
+    public static boolean smallForm = false;
 
     /*final public static short CATEGORY_PLAYER = 0x0001;
     final public static short CATEGORY_ENEMY = 0x0002;

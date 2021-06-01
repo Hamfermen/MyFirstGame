@@ -38,7 +38,7 @@ public class Item extends InteractiveItem {
 
         this.number = number;
 
-        System.out.println(this.pos);
+        //System.out.println(this.pos);
 
         createItems(world, pos, bodyName);
 
@@ -79,7 +79,7 @@ public class Item extends InteractiveItem {
         box.dispose();
 
         body.setUserData(bodyName);
-        System.out.println(body.getUserData());
+        //System.out.println(body.getUserData());
     }
 
 }

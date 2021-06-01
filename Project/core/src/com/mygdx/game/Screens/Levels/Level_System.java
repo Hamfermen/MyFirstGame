@@ -3,6 +3,7 @@ package com.mygdx.game.Screens.Levels;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -31,6 +32,7 @@ import com.mygdx.game.InteractiveItem.Items.InteractiveItem;
 import com.mygdx.game.MainClass;
 import com.mygdx.game.MyPreference;
 import com.mygdx.game.Saves;
+import com.mygdx.game.Screens.LoadingScreen;
 import com.mygdx.game.TMObjectsUtils;
 import com.mygdx.game.UI;
 import com.mygdx.game.Unit.Unit;
@@ -50,15 +52,17 @@ public class Level_System implements Screen {
     }
 
     private class BackGround extends Actor {
-        private Texture t;
+        private Texture t, ts;
 
         public BackGround() {
             t = new Texture("TiledMapBackGround.png");
+            ts = new Texture("Sky.png");
         }
 
         @Override
         public void draw(Batch batch, float parentAlpha) {
-            batch.draw(t, 0,  Gdx.graphics.getHeight() == 1280 ? -1f : -0.2f, 6000f * Const.Unit_Scale, 1300f * Const.Unit_Scale);
+            batch.draw(t, 0,  -0.2f * Const.SizeY, playerCamera.viewportWidth * 4.6875f, playerCamera.viewportHeight * 1.805556f);
+            batch.draw(ts, 0, playerCamera.viewportHeight * 1.805556f - 0.2f * Const.SizeY, playerCamera.viewportWidth * 4.6875f, playerCamera.viewportHeight * 1.805556f);
         }
     }
 
@@ -67,6 +71,8 @@ public class Level_System implements Screen {
     private MainClass mainClass;
 
     private Levels_Storage levelStorage;
+
+    public LoadingScreen loadingScreen;
 
     private TiledMap tiledMap;
     private TmxMapLoader loader;
@@ -100,15 +106,21 @@ public class Level_System implements Screen {
 
     private Saves saves;
 
+    private Music music;
+
     private GameController gameController[];
 
     public Level_System(MainClass mainClass){
         this.mainClass = mainClass;
+        music = Gdx.audio.newMusic(Gdx.files.internal("BackGroundMusic2.mp3"));
+        music.setVolume(0.1f);
     }
 
     @Override
     public void show() {
         Const.freeze = false;
+
+        if (Const.newLevel) MyPreference.setDialogPos(0);
 
         batch = new SpriteBatch();
 
@@ -117,8 +129,6 @@ public class Level_System implements Screen {
         background = new BackGround();
 
         world = new World(new Vector2(0, -30), true);
-
-        MyPreference.setDialogPos(0);
 
 //        tiledMap = new TiledMap();
         loader = new TmxMapLoader();
@@ -129,19 +139,19 @@ public class Level_System implements Screen {
         TMObjectsUtils.buildBuildingsBodies(tiledMap, world, Const.TiledMap_Scale, "Blocks");
         TMObjectsUtils.buildBuildingsBodies(tiledMap, world, Const.TiledMap_Scale, "WorldBarrier");
         TMObjectsUtils.buildBuildingsBodies(tiledMap, world, Const.TiledMap_Scale, "EnemiesBarrier");
+        if (MyPreference.getLevel_number() == 1) TMObjectsUtils.buildBuildingsBodies(tiledMap, world, Const.TiledMap_Scale, "Platforms");
         cameraCriticalPos = new ArrayList<>(findPositions(tiledMap, Const.TiledMap_Scale, "Camera"));
 
         box2DDebugRenderer = new Box2DDebugRenderer();
 
         playerCamera = new OrthographicCamera();
-        playerCamera.setToOrtho(false, Gdx.graphics.getWidth() * Const.Unit_Scale, Gdx.graphics.getHeight() * Const.Unit_Scale);
+        playerCamera.setToOrtho(false, 1280 * Const.Unit_Scale, 720 * Const.Unit_Scale);
         playerCamera.update();
 
         if (Const.newLevel) {
             MyPreference.setPositionX(findPositions(tiledMap, Const.TiledMap_Scale, "PlayerStart").get(0).x);
             MyPreference.setPositionY(findPositions(tiledMap, Const.TiledMap_Scale, "PlayerStart").get(0).y);
             playerCamera.position.x = 10f;
-            Const.newLevel = false;
         }
 
         uiCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -183,6 +193,8 @@ public class Level_System implements Screen {
                 Mael = new Npc(world, tiledMap, "Mael");
                 level.addActor(Mael);
                 levelStorage.npc = Mael;
+                Mael.Mael.setDialog();
+                Mael.Mael.setDialogImage();
                 break;
             case "Merlin":
                 Merlin = new Npc(world, tiledMap, "Merlin");
@@ -209,9 +221,11 @@ public class Level_System implements Screen {
 
         Gdx.input.setInputProcessor(level);
 
-        saves = new Saves(world, unit, levelStorage.npc, items, UI, playerCamera);
+        saves = new Saves(world, unit, levelStorage.npc, items, UI, playerCamera, Const.levels.get(MyPreference.getLevel_number()));
 
-        if (!Const.newGame) saves.Load();
+        if (!Const.newGame && !Const.newLevel) saves.Load();
+        if (Const.newLevel) saves.LoadUI();
+        Const.newLevel = false;
 
         gameController = new GameController[6];
         gameController[0] = new GameController(GameController.Direction.RIGHT);
@@ -233,12 +247,18 @@ public class Level_System implements Screen {
         //control.setDebugAll(true);
 
         Gdx.input.setInputProcessor(control);
+
+        loadingScreen = new LoadingScreen(mainClass, UI.worldTime, mainClass.level_system);
+
+        music.setLooping(true);
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glClearColor(0, 0.4f, 0.7f, 1);
+
+        if (!music.isPlaying()) music.play();
 
        /* batch.begin();
         batch.draw(background, 0,50, 640f, 340f);
@@ -258,12 +278,12 @@ public class Level_System implements Screen {
 
         if (!Const.freeze) unit.UnitUpdate(delta);
 
-        if (unit.player.getX() <= (Gdx.graphics.getWidth() == 1280 ? 26.7f : 26.3f) && playerCamera.viewportWidth / 2 <= unit.player.getX()) {
+        if (unit.player.getX() <= (6000 * Const.Unit_Scale) - 1280 * Const.Unit_Scale / 2 && playerCamera.viewportWidth / 2 <= unit.player.getX()) {
             playerCamera.position.x = unit.player.getX();
             playerCamera.update();
 
 
-        } else if (playerCamera.position.x >= cameraCriticalPos.get(0).x + 3.3f * Const.SizeX && playerCamera.position.x <= (Gdx.graphics.getWidth() == 1280 ? 26.7f : 26.3f)) {
+        } else if (playerCamera.position.x >= 3.3f && playerCamera.position.x <= (6000 * Const.Unit_Scale) - 1280 * Const.Unit_Scale / 2) {
             playerCamera.position.x = unit.player.getX();
             playerCamera.update();
         }
@@ -286,6 +306,7 @@ public class Level_System implements Screen {
                     dialog.getViewport().apply();
                     dialog.act();
                     dialog.draw();
+                    if (!(Mael.Mael.dialog.dialogPos < Mael.Mael.dialog.dialog.size() - 1)) mainClass.ChangeScreen(mainClass.toBeContinuedScreen);
                 }
                 break;
             case "Merlin":
@@ -305,12 +326,20 @@ public class Level_System implements Screen {
             mainClass.ChangeScreen(mainClass.mainMenuScreen);
         }
 
-        if (UI.hours.compareTo("09") >= 0 && UI.hours.compareTo("10") < 0) unit.player.smallForm = true;
-        else if (UI.hours.compareTo("10") >= 0) unit.player.smallForm = false;
+        if (UI.worldTime.getHours() >= 8 && UI.worldTime.getHours() < 18) {
+            unit.player.smallForm = false;
+            Const.smallForm = false;
+        }
+        else if (UI.worldTime.getHours() >= 18) {
+            unit.player.smallForm = true;
+            Const.smallForm = true;
+        }
 
-        //box2DDebugRenderer.render(world, playerCamera.combined);
+        if (UI.worldTime.getHours() >= 19) unit.player.isPlayerDead = true;
 
-        playerCamera.position.y = Gdx.graphics.getHeight() == 720 ? unit.player.getY() + 0.6f : unit.player.getY() + 1.2f;
+        box2DDebugRenderer.render(world, playerCamera.combined);
+
+        playerCamera.position.y = unit.player.getY() + 0.6f;
         playerCamera.update();
 
         items.ItemsUpdate();
@@ -361,8 +390,12 @@ public class Level_System implements Screen {
         MyPreference.setTime(UI.hours + UI.minutes);
         MyPreference.setPositionX(unit.player.body.getPosition().x);
         MyPreference.setPositionY(unit.player.body.getPosition().y);*/
-        if (!unit.player.isPlayerDead && !items.finish.FinishInteract) Const.newGame = false;
-        saves.Save();
+        if (!unit.player.isPlayerDead) {
+            Const.newGame = false;
+            saves.Save();
+        }
+        music.pause();
+        GameController.allFalse();
         dispose();
     }
 
@@ -375,6 +408,7 @@ public class Level_System implements Screen {
         ui.dispose();
         dialog.dispose();
         batch.dispose();
+        music.dispose();
     }
 
     private List<Vector2> findPositions(TiledMap tiledMap, float density, String layerName) {

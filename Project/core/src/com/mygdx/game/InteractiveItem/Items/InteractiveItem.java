@@ -61,6 +61,7 @@ public class InteractiveItem extends Actor implements Interact {
         }
         if (whoInteract == "Finish")
             finish.FinishInteract = true;
+        else finish.FinishInteract = false;
     }
 
     public void ItemsUpdate() {

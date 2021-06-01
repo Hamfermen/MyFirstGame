@@ -39,7 +39,7 @@ public class Player extends Unit {
     public boolean isPlayerAttack = false;
     public boolean isPlayerDead = false;
 
-    private boolean isAnimationAttack = false;
+    public boolean isAnimationAttack = false;
 
     public Body body;
 
@@ -87,6 +87,10 @@ public class Player extends Unit {
         //size = new Vector2(x, y);
 
         health = 1;
+
+        isAnimationAttack = false;
+        isPlayerAttack = false;
+        isPlayerDead = false;
     }
 
     public void update(float delta) {
@@ -118,12 +122,12 @@ public class Player extends Unit {
     }
 
     private void Move(float direction) {
-        body.setLinearVelocity(new Vector2(direction * 200 * Const.SizeX, body.getLinearVelocity().y));
+        body.setLinearVelocity(new Vector2(direction * 40000 * Const.Unit_Scale * Const.SizeX * Const.SizeY, body.getLinearVelocity().y));
     }
 
     private void Jump() {
         isGrounded = false;
-        body.applyLinearImpulse(new Vector2(0, body.getMass() * (10 / Const.SizeY)), new Vector2(0, 0), true);
+        body.applyLinearImpulse(new Vector2(0, 2000 * Const.Unit_Scale / Const.SizeY / Const.SizeX), new Vector2(0, 0), true);
     }
 
     @Override
@@ -133,16 +137,16 @@ public class Player extends Unit {
         else direction = 0;
         if (!smallForm) {
             if (getState() != State.RUN && getState() != State.ATTACK)
-                batch.draw(getFrame(Gdx.graphics.getDeltaTime()), this.getX() - (10 + direction) * Const.SizeX * Const.Unit_Scale, this.getY() - 2 * Const.Unit_Scale * Const.SizeY, 120 * Const.Unit_Scale * Const.SizeX, 160 * Const.Unit_Scale * Const.SizeY);
+                batch.draw(getFrame(Gdx.graphics.getDeltaTime()), this.getX() - (10 + direction) * Const.Unit_Scale, this.getY() - 2 * Const.Unit_Scale, 120 * Const.Unit_Scale, 160 * Const.Unit_Scale);
             else if (getState() != State.ATTACK)
-                batch.draw(getFrame(Gdx.graphics.getDeltaTime()), this.getX() - 100 * Const.Unit_Scale * Const.SizeX, this.getY() - 115 * Const.Unit_Scale * Const.SizeY, 240 * Const.Unit_Scale * Const.SizeX, 320 * Const.Unit_Scale * Const.SizeY);
+                batch.draw(getFrame(Gdx.graphics.getDeltaTime()), this.getX() - 100 * Const.Unit_Scale, this.getY() - 115 * Const.Unit_Scale, 240 * Const.Unit_Scale, 320 * Const.Unit_Scale);
             else if (getState() == State.ATTACK)
-                batch.draw(getFrame(Gdx.graphics.getDeltaTime()), this.getX() - 100 * Const.Unit_Scale * Const.SizeX, this.getY(), 300 * Const.Unit_Scale * Const.SizeX, 200 * Const.Unit_Scale * Const.SizeY);
+                batch.draw(getFrame(Gdx.graphics.getDeltaTime()), this.getX() - 100 * Const.Unit_Scale, this.getY(), 300 * Const.Unit_Scale, 200 * Const.Unit_Scale);
         }else {
             if (getState() == State.RUN) {
-                batch.draw(getFrame(Gdx.graphics.getDeltaTime()), this.getX(), this.getY(), 100 * Const.Unit_Scale * Const.SizeX, 120 * Const.Unit_Scale * Const.SizeY);
+                batch.draw(getFrame(Gdx.graphics.getDeltaTime()), this.getX(), this.getY(), 100 * Const.Unit_Scale, 120 * Const.Unit_Scale);
             }else {
-                batch.draw(getFrame(Gdx.graphics.getDeltaTime()), this.getX(), this.getY(),  60 * Const.Unit_Scale * Const.SizeX, 120 * Const.Unit_Scale * Const.SizeY);
+                batch.draw(getFrame(Gdx.graphics.getDeltaTime()), this.getX(), this.getY(),  60 * Const.Unit_Scale, 120 * Const.Unit_Scale);
             }
 
         }

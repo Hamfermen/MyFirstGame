@@ -7,6 +7,7 @@ import com.mygdx.game.InteractiveItem.All_Npc.Npc;
 import com.mygdx.game.InteractiveItem.Interact;
 import com.mygdx.game.InteractiveItem.Items.InteractiveItem;
 import com.mygdx.game.Screens.Levels.Level_System;
+import com.mygdx.game.Screens.Levels.Levels_Storage;
 import com.mygdx.game.Unit.Unit;
 
 import java.util.ArrayList;
@@ -22,14 +23,16 @@ public class Saves {
     private String itemsNumber, enemiesNumber;
     private World world;
     private OrthographicCamera camera;
+    private Levels_Storage levels_storage;
 
-    public Saves(World world, Unit unit, Npc npc, InteractiveItem items, UI ui, OrthographicCamera camera){
+    public Saves(World world, Unit unit, Npc npc, InteractiveItem items, UI ui, OrthographicCamera camera, Levels_Storage levels_storage){
         this.items = items;
         this.ui = ui;
         this.npc = npc;
         this.unit = unit;
         this.world = world;
         this.camera = camera;
+        this.levels_storage = levels_storage;
     }
     public void Save(){
 
@@ -52,24 +55,31 @@ public class Saves {
         MyPreference.setItemNumber(itemsNumber);
 
         enemiesNumber = "";
-        Vector2[] pos = new Vector2[unit.enemies.size()];
-        for (int i = 0; i < unit.enemies.size(); i++){
-            enemiesNumber += Integer.toString(unit.enemies.get(i).number) + " ";
-            pos[unit.enemies.get(i).number - 1] = unit.enemies.get(i).body.getPosition();
-        }
+        if (Const.levels.get(MyPreference.getLevel_number()).haveEnemies) {
+            Vector2[] pos = new Vector2[unit.enemies.size()];
+            for (int i = 0; i < unit.enemies.size(); i++) {
+                enemiesNumber += Integer.toString(unit.enemies.get(i).number) + " ";
+                pos[unit.enemies.get(i).number - 1] = unit.enemies.get(i).body.getPosition();
+            }
+            MyPreference.setEnemiesSize(unit.enemies.size());
+        }else MyPreference.setEnemiesSize(0);
         MyPreference.setEnemyNumber(enemiesNumber);
-        MyPreference.setEnemiesSize(unit.enemies.size());
-        for (int i = 0; i < pos.length; i++){
 
-        }
     }
     public void Load(){
-        ui.time = MyPreference.getTime();
+        LoadUI();
 
-        unit.player.score = MyPreference.getScore();
-        unit.player.health = MyPreference.getHealth();
         unit.position = new Vector2(MyPreference.getPositionX(), MyPreference.getPositionY());
-        npc.DialogPos = MyPreference.getDialogPos();
+        switch (levels_storage.npcName){
+             case "Mael":
+                 npc.Mael.dialogPos = MyPreference.getDialogPos();
+                 npc.Mael.dialog.dialogPos = MyPreference.getDialogPos();
+                 break;
+             case "Merlin":
+                 npc.Merlin.dialogPos = MyPreference.getDialogPos();
+                 npc.Merlin.dialog.dialogPos = MyPreference.getDialogPos();
+                 break;
+        }
 
         ui.player = unit.player;
         ui.pos = unit.player.body.getPosition();
@@ -80,7 +90,6 @@ public class Saves {
         itemsNumber = MyPreference.getItemNumber();
         int i = 0;
         List<Integer> numbers = new ArrayList<>();
-        System.out.println(itemsNumber.length());
         while (!itemsNumber.isEmpty() && i < itemsNumber.length()){
             String s = "";
             while (itemsNumber.charAt(i) != ' ') {
@@ -110,12 +119,20 @@ public class Saves {
             numbers.add(Integer.parseInt(s));
             i++;
         }
-        for (i = 0; i < unit.enemies.size(); i++){
-            if (Collections.binarySearch(numbers, unit.enemies.get(i).number) < 0) {
-                world.destroyBody(unit.enemies.get(i).body);
-                unit.enemies.remove(i);
+        if (Const.levels.get(MyPreference.getLevel_number()).haveEnemies) {
+            for (i = 0; i < unit.enemies.size(); i++) {
+                if (Collections.binarySearch(numbers, unit.enemies.get(i).number) < 0) {
+                    world.destroyBody(unit.enemies.get(i).body);
+                    unit.enemies.remove(i);
+                }
             }
         }
         unit.enemiesSize = MyPreference.pref.getInteger("EnemiesSize");
+    }
+
+    public void LoadUI(){
+        ui.time = MyPreference.getTime();
+        unit.player.score = MyPreference.getScore();
+        unit.player.health = MyPreference.getHealth();
     }
 }

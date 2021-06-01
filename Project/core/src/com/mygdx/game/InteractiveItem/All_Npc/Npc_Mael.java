@@ -45,11 +45,13 @@ public class Npc_Mael extends Npc{
 
     private float stateTimer;
 
-    private int dialogPos;
+    public int dialogPos;
 
     public Dialog dialog;
 
     public boolean dialogStarted = false;
+
+    private boolean isSet = true;
 
     private List<String> Mael_dialog;
 
@@ -58,9 +60,13 @@ public class Npc_Mael extends Npc{
     public Npc_Mael(World world, Vector2 pos){
         dialogPos = DialogPos;
 
-        setDialog();
+        isSet = true;
 
-        setDialogImage();
+        Mael_dialog = new ArrayList<String>();
+        Mael_dialog.add("");
+
+        Mael_dialogImage = new ArrayList<Texture>();
+        Mael_dialogImage.add(new Texture("DialogImage\\mael1.png"));
 
         dialog = new Dialog(Mael_dialog, Mael_dialogImage, dialogPos);
 
@@ -72,8 +78,8 @@ public class Npc_Mael extends Npc{
 
         frames = new Array<TextureRegion>();
 
-        for (int i = 0; i < 11; i++)
-            frames.add(new TextureRegion(new Texture("Mael_Idle.png"), i * 180, 0, 180, 140));
+        for (int i = 0; i < 9; i++)
+            frames.add(new TextureRegion(new Texture("Fly.png"), i * 180, 0, 180, 180));
         MaelState = new Animation(0.1f, frames);
     }
 
@@ -121,6 +127,8 @@ public class Npc_Mael extends Npc{
 
         region = (TextureRegion) MaelState.getKeyFrame(stateTimer, true);
 
+        if (!region.isFlipX()) region.flip(true, false);
+
         if (!Const.freeze)
             stateTimer = nowFrame == previousFrame ? stateTimer + delta : 0;
         previousFrame = nowFrame;
@@ -132,17 +140,31 @@ public class Npc_Mael extends Npc{
         return State.STATE;
     }
 
-    private void setDialog(){
-        Mael_dialog = new ArrayList<String>();
-        Mael_dialog.add("");
-        Mael_dialog.add("Привет");
-        Mael_dialog.add("Я Маель");
+    public void setDialog(){
+        if (!Const.smallForm) Mael_dialog.add("Ты не должен был оказаться здесь быстрее меня.");
+        else Mael_dialog.add("Как ты смог оказаться здесь быстрее меня?");
+        Mael_dialog.add("Ха-ха-ха");
+        Mael_dialog.add("За кого ты меня принимаешь? \n Я являюсь одним из четырёх архангелов");
+        if (!Const.smallForm) Mael_dialog.add("Я не позволю тебе навредить леди Элизабет, \n я убью тебя");
+        else Mael_dialog.add("Пожалуйста не трогай леди Элизабет.");
+        if (!Const.smallForm) Mael_dialog.add("И это говорит тот, кто нагло отобрал \n у меня мою святыню?");
+        else Mael_dialog.add("Мне она не к чему, мне нужна лишь моя святыня.");
+        if (!Const.smallForm) Mael_dialog.add("Я был избранным, это по праву принадлежит мне.");
+        else Mael_dialog.add("Но я был рождён таким, я не хочу расставаться с силой.");
+        Mael_dialog.add("В любом случае я хочу её забрать назад, \n приготовся к смерти!");
     }
 
-    private void setDialogImage(){
-        Mael_dialogImage = new ArrayList<Texture>();
-        Mael_dialogImage.add(new Texture("DialogImage\\mael1.png"));
-        Mael_dialogImage.add(new Texture("DialogImage\\mael1.png"));
+    public void setDialogImage(){
+        if (!Const.smallForm) Mael_dialogImage.add(new Texture("DialogImage\\eskanor_sf_4.png"));
+        else Mael_dialogImage.add(new Texture("DialogImage\\eskanor_s_3.png"));
         Mael_dialogImage.add(new Texture("DialogImage\\mael3.png"));
+        Mael_dialogImage.add(new Texture("DialogImage\\mael1.png"));
+        if (!Const.smallForm) Mael_dialogImage.add(new Texture("DialogImage\\eskanor_sf_4.png"));
+        else Mael_dialogImage.add(new Texture("DialogImage\\eskanor_s_3.png"));
+        if (!Const.smallForm) Mael_dialogImage.add(new Texture("DialogImage\\mael2.png"));
+        else Mael_dialogImage.add(new Texture("DialogImage\\mael1.png"));
+        if (!Const.smallForm) Mael_dialogImage.add(new Texture("DialogImage\\eskanor_sf_1.png"));
+        else Mael_dialogImage.add(new Texture("DialogImage\\eskanor_s_1.png"));
+        Mael_dialogImage.add(new Texture("DialogImage\\mael2.png"));
     }
 }

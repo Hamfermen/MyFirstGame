@@ -17,11 +17,11 @@ import com.mygdx.game.InteractiveItem.Interact;
 public class Npc extends Actor implements Interact {
     private Vector2 posMerlin;
 
-    private Npc_Merlin Merlin;
+    public Npc_Merlin Merlin;
 
     private Vector2 posMael;
 
-    private Npc_Mael Mael;
+    public Npc_Mael Mael;
 
     private String npcName;
 
@@ -42,7 +42,6 @@ public class Npc extends Actor implements Interact {
                 break;
             case "Mael":
                 posMael = findPositions(tiledMap, Const.TiledMap_Scale, "Mael");
-                if (Gdx.graphics.getWidth() != 1280) posMael.y += 0.09f;
                 Mael = new Npc_Mael(world, posMael);
                 break;
         }

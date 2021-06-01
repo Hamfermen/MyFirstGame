@@ -73,7 +73,7 @@ public class MyPreference {
         pref.flush();
     }
 
-    public static int getHealth(){return pref.getInteger("health", 0);}
+    public static int getHealth(){return pref.getInteger("health", 1);}
 
     public static void setHealth(int health){
         pref.putInteger("health", health);

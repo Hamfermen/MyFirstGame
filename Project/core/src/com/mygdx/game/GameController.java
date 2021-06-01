@@ -54,16 +54,13 @@ public class GameController extends Actor {
                     case RIGHT:
                         right = true;
                         left = false;
-                        System.out.println("right");
                         break;
                     case UP:
                         up = true;
-                        System.out.println("up");
                         break;
                     case LEFT:
                         left = true;
                         right = false;
-                        System.out.println("left");
                         break;
                     case INTERACT:
                         interact = true;
@@ -103,6 +100,14 @@ public class GameController extends Actor {
                 }
             }
         });
+    }
+
+    public static void allFalse(){
+        left = false;
+        right = false;
+        up = false;
+        attack = false;
+        interact = false;
     }
 
     @Override

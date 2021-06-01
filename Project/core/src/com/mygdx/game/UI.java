@@ -20,7 +20,7 @@ public class UI extends Actor {
     private BitmapFont text_time;
     private BitmapFont text_score;
 
-    private WorldTime worldTime;
+    public WorldTime worldTime;
 
     public String hours, minutes;
     public String time = MyPreference.getTime();
@@ -37,7 +37,10 @@ public class UI extends Actor {
         text_score = new BitmapFont(Gdx.files.internal("font.fnt"));
         text_score.getData().setScale(1, 1);
 
-        if (Const.newGame) time = "0800";
+        if (Const.newGame) {
+            System.out.println("dd");
+            time = "1700";
+        }
 
         worldTime = new WorldTime(time);
     }

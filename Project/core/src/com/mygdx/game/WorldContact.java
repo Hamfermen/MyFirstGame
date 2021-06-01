@@ -54,7 +54,7 @@ public class WorldContact implements ContactListener {
     }
 
     private void checkGround(Fixture fixtureA, Fixture fixtureB, boolean isGrounded) {
-        if (fixtureA.getUserData() == "leg" && fixtureB.getUserData() == "Blocks" || fixtureB.getUserData() == "leg" && fixtureA.getUserData() == "Blocks") {
+        if (fixtureA.getUserData() == "leg" && (fixtureB.getUserData() == "Blocks" || fixtureB.getUserData() == "Platforms") || fixtureB.getUserData() == "leg" && (fixtureA.getUserData() == "Blocks" || fixtureA.getUserData() == "Platforms")) {
             unit.player.isGrounded = isGrounded;
             if (isGrounded) unit.player.body.setLinearVelocity(unit.player.body.getLinearVelocity().x, 0);
         }

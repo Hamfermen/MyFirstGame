@@ -41,14 +41,14 @@ public class Finish extends InteractiveItem {
     public void FinishUpdate() {
         if (FinishInteract)
             if (!Const.freeze && (Gdx.input.isKeyPressed(Input.Keys.E) || GameController.interact)) {
-                /*if (!(MyPreference.getLevel_number() + 1 == Const.levels.size()))
-                    MyPreference.setLevel_number(MyPreference.getLevel_number() + 1);*/
-                GameController.interact = false;
+                if (!(MyPreference.getLevel_number() + 1 == Const.levels.size()))
+                    MyPreference.setLevel_number(MyPreference.getLevel_number() + 1);
+                /*GameController.interact = false;
                 MyPreference.pref.clear();
-                MyPreference.setNewgame(true);
+                MyPreference.setNewgame(true);*/
                 Const.newLevel = true;
-                Const.newGame = true;
-                mainClass.ChangeScreen(mainClass.mainMenuScreen);
+                //Const.newGame = true;
+                mainClass.ChangeScreen(mainClass.level_system.loadingScreen);
             }
     }
 
@@ -68,6 +68,6 @@ public class Finish extends InteractiveItem {
         box.dispose();
 
         body.setUserData(bodyName);
-        System.out.println(body.getUserData());
+        //System.out.println(body.getUserData());
     }
 }

@@ -73,7 +73,6 @@ public class TMObjectsUtils {
                 0.0f);
         if (layername == "Point") {
             Const.points.add(new Vector2(rectangle.x * Const.TiledMap_Scale, rectangle.y * Const.TiledMap_Scale));
-            System.out.println(rectangle.x + " " + rectangle.y + " " + Const.points.get(0));
         }
         return polygon;
     }

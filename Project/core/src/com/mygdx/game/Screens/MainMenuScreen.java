@@ -39,6 +39,7 @@ public class MainMenuScreen implements Screen {
         text = new Label("Taiyo no senshi", new Label.LabelStyle(title, title.getColor()));
         text.setFontScale(1 * Const.SizeX, 1 * Const.SizeY);
         text.setPosition(50 * Const.SizeX, 550 * Const.SizeY);
+        text.setSize(500 * Const.SizeX, 100 * Const.SizeY);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -76,7 +77,7 @@ public class MainMenuScreen implements Screen {
         //if (MyPreference.isNewgame()) menuScreen.addActor(play);
         //menuScreen.addActor(option);
         menuScreen.addActor(exit);
-        //menuScreen.setDebugAll(true);
+        menuScreen.setDebugAll(true);
     }
 
     @Override
