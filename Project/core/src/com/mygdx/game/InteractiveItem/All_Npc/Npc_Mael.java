@@ -152,6 +152,7 @@ public class Npc_Mael extends Npc{
         if (!Const.smallForm) Mael_dialog.add("Я был избранным, это по праву принадлежит мне.");
         else Mael_dialog.add("Но я был рождён таким, я не хочу расставаться с силой.");
         Mael_dialog.add("В любом случае я хочу её забрать назад, \n приготовся к смерти!");
+        Mael_dialog.add("");
     }
 
     public void setDialogImage(){
@@ -165,6 +166,7 @@ public class Npc_Mael extends Npc{
         else Mael_dialogImage.add(new Texture("DialogImage\\mael1.png"));
         if (!Const.smallForm) Mael_dialogImage.add(new Texture("DialogImage\\eskanor_sf_1.png"));
         else Mael_dialogImage.add(new Texture("DialogImage\\eskanor_s_1.png"));
+        Mael_dialogImage.add(new Texture("DialogImage\\mael2.png"));
         Mael_dialogImage.add(new Texture("DialogImage\\mael2.png"));
     }
 }
