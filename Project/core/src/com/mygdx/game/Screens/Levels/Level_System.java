@@ -112,13 +112,14 @@ public class Level_System implements Screen {
 
     public Level_System(MainClass mainClass){
         this.mainClass = mainClass;
-        music = Gdx.audio.newMusic(Gdx.files.internal("BackGroundMusic2.mp3"));
-        music.setVolume(0.1f);
     }
 
     @Override
     public void show() {
         Const.freeze = false;
+
+        music = Gdx.audio.newMusic(Gdx.files.internal("BackGroundMusic2.mp3"));
+        music.setVolume(0.5f);
 
         if (Const.newLevel) MyPreference.setDialogPos(0);
 
@@ -307,6 +308,14 @@ public class Level_System implements Screen {
                     dialog.act();
                     dialog.draw();
                     if (!(Mael.Mael.dialog.dialogPos < Mael.Mael.dialog.dialog.size() - 1)) mainClass.ChangeScreen(mainClass.toBeContinuedScreen);
+                    if (Const.smallForm) {
+                        Mael.Mael.Mael_dialog.clear();
+                        Mael.Mael.Mael_dialog.add("");
+                        Mael.Mael.setDialog();
+                        Mael.Mael.Mael_dialogImage.clear();
+                        Mael.Mael.Mael_dialogImage.add(new Texture("DialogImage\\eskanor_sf_4.png"));
+                        Mael.Mael.setDialogImage();
+                    }
                 }
                 break;
             case "Merlin":
@@ -337,7 +346,7 @@ public class Level_System implements Screen {
 
         if (UI.worldTime.getHours() >= 19) unit.player.isPlayerDead = true;
 
-        box2DDebugRenderer.render(world, playerCamera.combined);
+        //box2DDebugRenderer.render(world, playerCamera.combined);
 
         playerCamera.position.y = unit.player.getY() + 0.6f;
         playerCamera.update();

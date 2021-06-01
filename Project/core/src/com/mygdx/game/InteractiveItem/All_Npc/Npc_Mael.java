@@ -53,9 +53,9 @@ public class Npc_Mael extends Npc{
 
     private boolean isSet = true;
 
-    private List<String> Mael_dialog;
+    public List<String> Mael_dialog;
 
-    private List<Texture> Mael_dialogImage;
+    public List<Texture> Mael_dialogImage;
 
     public Npc_Mael(World world, Vector2 pos){
         dialogPos = DialogPos;

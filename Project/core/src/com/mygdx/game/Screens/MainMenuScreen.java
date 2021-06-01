@@ -77,7 +77,7 @@ public class MainMenuScreen implements Screen {
         //if (MyPreference.isNewgame()) menuScreen.addActor(play);
         //menuScreen.addActor(option);
         menuScreen.addActor(exit);
-        menuScreen.setDebugAll(true);
+        //menuScreen.setDebugAll(true);
     }
 
     @Override
