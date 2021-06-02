@@ -348,7 +348,7 @@ public class Level_System implements Screen {
 
         //box2DDebugRenderer.render(world, playerCamera.combined);
 
-        playerCamera.position.y = unit.player.getY() + 0.6f;
+        playerCamera.position.y = unit.player.getY() + 0.6f * Const.SizeY;
         playerCamera.update();
 
         items.ItemsUpdate();
