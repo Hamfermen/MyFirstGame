@@ -346,7 +346,7 @@ public class Level_System implements Screen {
 
         if (UI.worldTime.getHours() >= 19) unit.player.isPlayerDead = true;
 
-        box2DDebugRenderer.render(world, playerCamera.combined);
+        //box2DDebugRenderer.render(world, playerCamera.combined);
 
         playerCamera.position.y = unit.player.getY() + 0.6f;
         playerCamera.update();
@@ -410,7 +410,7 @@ public class Level_System implements Screen {
     @Override
     public void dispose() {
         tiledMap.dispose();
-        box2DDebugRenderer.dispose();
+        //box2DDebugRenderer.dispose();
         world.dispose();
         level.dispose();
         ui.dispose();
