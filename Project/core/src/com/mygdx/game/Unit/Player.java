@@ -122,12 +122,12 @@ public class Player extends Unit {
     }
 
     private void Move(float direction) {
-        body.setLinearVelocity(new Vector2(direction * 40000 * Const.Unit_Scale * Const.SizeX * Const.SizeY, body.getLinearVelocity().y));
+        body.setLinearVelocity(new Vector2(direction * 200, body.getLinearVelocity().y));
     }
 
     private void Jump() {
         isGrounded = false;
-        body.applyLinearImpulse(new Vector2(0, 2000 * Const.Unit_Scale / Const.SizeY / Const.SizeX), new Vector2(0, 0), true);
+        body.applyLinearImpulse(new Vector2(0, 10), new Vector2(0, 0), true);
     }
 
     @Override

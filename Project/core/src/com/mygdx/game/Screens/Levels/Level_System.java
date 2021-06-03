@@ -119,7 +119,7 @@ public class Level_System implements Screen {
         Const.freeze = false;
 
         music = Gdx.audio.newMusic(Gdx.files.internal("BackGroundMusic2.mp3"));
-        music.setVolume(0.5f);
+        music.setVolume(MyPreference.getMusicValue());
 
         if (Const.newLevel) MyPreference.setDialogPos(0);
 
@@ -279,12 +279,12 @@ public class Level_System implements Screen {
 
         if (!Const.freeze) unit.UnitUpdate(delta);
 
-        if (unit.player.getX() <= (6000 * Const.Unit_Scale) - 1280 * Const.Unit_Scale / 2 && playerCamera.viewportWidth / 2 <= unit.player.getX()) {
+        if (unit.player.getX() <= (6000 * Const.Unit_Scale) - playerCamera.viewportWidth / 2 - 0.1f && playerCamera.viewportWidth / 2 <= unit.player.getX()) {
             playerCamera.position.x = unit.player.getX();
             playerCamera.update();
 
 
-        } else if (playerCamera.position.x >= 3.3f && playerCamera.position.x <= (6000 * Const.Unit_Scale) - 1280 * Const.Unit_Scale / 2) {
+        } else if (playerCamera.position.x >= playerCamera.viewportWidth / 2 + 0.1f && playerCamera.position.x <= (6000 * Const.Unit_Scale) - playerCamera.viewportWidth / 2 - 0.1f) {
             playerCamera.position.x = unit.player.getX();
             playerCamera.update();
         }
@@ -332,7 +332,7 @@ public class Level_System implements Screen {
             MyPreference.setNewgame(true);
             Const.newLevel = true;
             Const.newGame = true;
-            mainClass.ChangeScreen(mainClass.mainMenuScreen);
+            mainClass.ChangeScreen(mainClass.deathScreen);
         }
 
         if (UI.worldTime.getHours() >= 8 && UI.worldTime.getHours() < 18) {
@@ -346,9 +346,9 @@ public class Level_System implements Screen {
 
         if (UI.worldTime.getHours() >= 19) unit.player.isPlayerDead = true;
 
-        //box2DDebugRenderer.render(world, playerCamera.combined);
+        box2DDebugRenderer.render(world, playerCamera.combined);
 
-        playerCamera.position.y = unit.player.getY() + 0.6f * Const.SizeY;
+        playerCamera.position.y = unit.player.getY() + 0.6f;
         playerCamera.update();
 
         items.ItemsUpdate();
@@ -403,7 +403,6 @@ public class Level_System implements Screen {
             Const.newGame = false;
             saves.Save();
         }
-        music.pause();
         GameController.allFalse();
         dispose();
     }
@@ -411,7 +410,7 @@ public class Level_System implements Screen {
     @Override
     public void dispose() {
         tiledMap.dispose();
-        //box2DDebugRenderer.dispose();
+        box2DDebugRenderer.dispose();
         world.dispose();
         level.dispose();
         ui.dispose();

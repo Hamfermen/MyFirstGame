@@ -2,6 +2,7 @@ package com.mygdx.game.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Const;
 import com.mygdx.game.MainClass;
+import com.mygdx.game.MyPreference;
 import com.mygdx.game.Pair;
 
 import java.util.ArrayList;
@@ -30,16 +32,21 @@ public class MenuScreen implements Screen {
 
     private int portrait;
 
-    private ButtonsforScreen play, exit, merlin_portrait, eskanor_portrait;
+    private ButtonsforScreen play, exit, options, merlin_portrait, eskanor_portrait;
 
     public MenuScreen(MainClass mainClass) {
         this.mainClass = mainClass;
     }
 
+    private Music music;
+
     @Override
     public void show() {
 
         batch = new SpriteBatch();
+
+        music = Gdx.audio.newMusic(Gdx.files.internal("BackGroundMusic1.mp3"));
+        music.setVolume(MyPreference.getMusicValue());
 
         RandomXS128 random = new RandomXS128();
 
@@ -61,6 +68,10 @@ public class MenuScreen implements Screen {
         play.setSize(300f * Const.SizeX, 80f * Const.SizeY);
         play.setPosition(475f * Const.SizeX, 480f * Const.SizeY);
 
+        options = new ButtonsforScreen(mainClass.optionsScreen, false, false,"Play.png", mainClass);
+        options.setSize(300f * Const.SizeX, 80f * Const.SizeY);
+        options.setPosition(475f * Const.SizeX, 377.5f * Const.SizeY);
+
         exit = new ButtonsforScreen(mainClass.mainMenuScreen, false, false,"Play.png", mainClass);
         exit.setSize(300f * Const.SizeX, 80f * Const.SizeY);
         exit.setPosition(475f * Const.SizeX, 275f * Const.SizeY);
@@ -81,6 +92,7 @@ public class MenuScreen implements Screen {
         menuScreen = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(menuScreen);
         menuScreen.addActor(play);
+        menuScreen.addActor(options);
         menuScreen.addActor(exit);
         switch (portrait){
             case 0:
@@ -98,6 +110,7 @@ public class MenuScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if (!music.isPlaying()) music.play();
         batch.begin();
         batch.draw(background, 0, 0, 1280 * Const.SizeX, 720 * Const.SizeY);
         switch (portrait){
@@ -111,6 +124,7 @@ public class MenuScreen implements Screen {
         batch.end();
         menuScreen.act();
         menuScreen.draw();
+        Const.time = music.getPosition();
     }
 
     @Override
@@ -130,12 +144,13 @@ public class MenuScreen implements Screen {
 
     @Override
     public void hide() {
-
+        dispose();
     }
 
     @Override
     public void dispose() {
         batch.dispose();
+        music.dispose();
         background.dispose();
         merlin_info.dispose();
         menuScreen.dispose();

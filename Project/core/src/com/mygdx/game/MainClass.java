@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.mygdx.game.Screens.DeathScreen;
 import com.mygdx.game.Screens.Info.Eskanor_Info;
 import com.mygdx.game.Screens.Info.Merlin_Info;
 import com.mygdx.game.Screens.Levels.Level_System;
@@ -18,6 +19,7 @@ import com.mygdx.game.Screens.ToBeContinuedScreen;
 import java.util.HashMap;
 
 public class MainClass extends Game {
+
 	private MyPreference myPreference;
 
 	public MainMenuScreen mainMenuScreen;
@@ -27,6 +29,7 @@ public class MainClass extends Game {
 	public Merlin_Info merlin_info;
 	public Eskanor_Info eskanor_info;
 	public ToBeContinuedScreen toBeContinuedScreen;
+	public DeathScreen deathScreen;
 
 	private HashMap<String, TextureRegion> words;
 	private Texture wordsTexture;
@@ -44,7 +47,7 @@ public class MainClass extends Game {
 		myPreference = new MyPreference();
 		//MyPreference.pref.clear();
 		Const.levels.add(new Levels_Storage("Level1tmx", true, "Merlin"));
-		Const.levels.add(new Levels_Storage("Level2tmx", false, "Mael"));
+		Const.levels.add(new Levels_Storage("Level2tmx", true, "Mael"));
 
 		optionsScreen = new OptionsScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
@@ -53,6 +56,15 @@ public class MainClass extends Game {
 		merlin_info = new Merlin_Info(words, this);
 		eskanor_info = new Eskanor_Info(words, this);
 		toBeContinuedScreen = new ToBeContinuedScreen(this);
+		deathScreen = new DeathScreen(this);
+
+		if (MyPreference.getIsNewPreference()) {
+			MyPreference.pref.clear();
+			MyPreference.setIsNewPreference(false);
+			MyPreference.setNewgame(true);
+			Const.newLevel = true;
+			Const.newGame = true;
+		}
 
 		setScreen(mainMenuScreen);
 	}

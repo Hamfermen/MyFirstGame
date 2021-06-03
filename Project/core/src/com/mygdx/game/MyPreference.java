@@ -16,6 +16,15 @@ public class MyPreference {
         pref = Gdx.app.getPreferences("My Preferences");
     }
 
+    public static float getMusicValue(){
+        return pref.getFloat("musicValue", 0.5f);
+    }
+
+    public static void setMusicValue(float musicValue){
+        pref.putFloat("musicValue", musicValue);
+        pref.flush();
+    }
+
     public static int getLevel_number() {
         return pref.getInteger("levelnumber", 0);
     }
@@ -44,7 +53,7 @@ public class MyPreference {
     }
 
     public static String getTime() {
-        return pref.getString("time", "0800");
+        return pref.getString("time", "1700");
     }
 
     public static void setTime(String time) {
@@ -125,6 +134,13 @@ public class MyPreference {
 
     public static void setCameraPositionY(float position){
         pref.putFloat("cameraPositionY", position);
+        pref.flush();
+    }
+
+    public static boolean getIsNewPreference(){return pref.getBoolean("isNewPreference", true);}
+
+    public static void setIsNewPreference(boolean isNewPreference){
+        pref.putBoolean("isNewPreference", isNewPreference);
         pref.flush();
     }
 }

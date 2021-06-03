@@ -22,6 +22,7 @@ public class ButtonsforScreen extends Actor {
                 if (!exit) {
                     if (isNewGame) {
                         MyPreference.pref.clear();
+                        MyPreference.setIsNewPreference(false);
                         MyPreference.setNewgame(true);
                         Const.newLevel = true;
                         Const.newGame = true;

@@ -59,7 +59,11 @@ public class Enemy extends Unit {
 
     public int number;
 
-    public Enemy(int number, float x, float y, World world, Vector2 pos, String bodyName, List<Enemy> enemies) {
+    private Unit unit;
+
+    private boolean getScore = true;
+
+    public Enemy(int number, Unit unit, float x, float y, World world, Vector2 pos, String bodyName, List<Enemy> enemies) {
         makeFrames();
 
         this.number = number;
@@ -81,6 +85,10 @@ public class Enemy extends Unit {
         this.world = world;
 
         this.setBounds(pos.x - x / 2, pos.y - y / 2, x * Const.SizeX, y * Const.SizeY);
+
+        this.unit = unit;
+
+        getScore = true;
     }
 
     private void CreateBody(float x, float y, Vector2 pos, World world, String bodyName) {
@@ -132,6 +140,10 @@ public class Enemy extends Unit {
         else isEnemyAttack = false;
         if (!stopMove) Move(direction * delta);
         if (health <= 0) {
+            if (getScore) {
+                getScore = false;
+                unit.player.score += 20;
+            }
             enemies.remove(this);
             world.destroyBody(body);
         }
@@ -139,7 +151,7 @@ public class Enemy extends Unit {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - 56 * Const.Unit_Scale * Const.SizeX, body.getPosition().y - 80 * Const.Unit_Scale * Const.SizeY, 56 * 2 * Const.Unit_Scale * Const.SizeX, 80 * 2 * Const.Unit_Scale * Const.SizeY);
+        batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - 56 * Const.Unit_Scale, body.getPosition().y - 80 * Const.Unit_Scale, 56 * 2 * Const.Unit_Scale, 80 * 2 * Const.Unit_Scale);
     }
 
     private void Move(float direction){

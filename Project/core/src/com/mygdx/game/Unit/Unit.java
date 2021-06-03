@@ -115,17 +115,13 @@ public class Unit extends Actor implements GetDamage, CanAttack{
         enemiesSize = 0;
 
         for (int i = 0; i < EnemiesPos.size(); i++) {
-            enemies.add(new Enemy(i + 1, Const.playerX * Const.Unit_Scale, Const.playerY * Const.Unit_Scale, world, EnemiesPos.get(i), "Enemy" + Integer.toString(i), enemies));
+            enemies.add(new Enemy(i + 1, this,Const.playerX * Const.Unit_Scale, Const.playerY * Const.Unit_Scale, world, EnemiesPos.get(i), "Enemy" + Integer.toString(i), enemies));
             if (enemiesSize == 0) enemiesSize++;
         }
     }
 
     public void UnitUpdate(float delta) {
         if (enemies != null && enemiesSize != enemies.size()) {
-            for (int i = 0; i < enemiesSize - enemies.size(); i++) {
-                player.score += 20;
-                enemiesSize--;
-            }
             for (int i = 0; i < enemies.size(); i++) {
                 enemies.get(i).body.setUserData("Enemy" + Integer.toString(i));
             }

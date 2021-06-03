@@ -55,14 +55,10 @@ public class Saves {
         MyPreference.setItemNumber(itemsNumber);
 
         enemiesNumber = "";
-        if (Const.levels.get(MyPreference.getLevel_number()).haveEnemies) {
-            Vector2[] pos = new Vector2[unit.enemies.size()];
-            for (int i = 0; i < unit.enemies.size(); i++) {
-                enemiesNumber += Integer.toString(unit.enemies.get(i).number) + " ";
-                pos[unit.enemies.get(i).number - 1] = unit.enemies.get(i).body.getPosition();
-            }
-            MyPreference.setEnemiesSize(unit.enemies.size());
-        }else MyPreference.setEnemiesSize(0);
+        Vector2[] pos = new Vector2[unit.enemies.size()];
+        for (int i = 0; i < unit.enemies.size(); i++) {
+            enemiesNumber += Integer.toString(unit.enemies.get(i).number) + " ";
+        }
         MyPreference.setEnemyNumber(enemiesNumber);
 
     }
@@ -119,15 +115,14 @@ public class Saves {
             numbers.add(Integer.parseInt(s));
             i++;
         }
-        if (Const.levels.get(MyPreference.getLevel_number()).haveEnemies) {
-            for (i = 0; i < unit.enemies.size(); i++) {
-                if (Collections.binarySearch(numbers, unit.enemies.get(i).number) < 0) {
-                    world.destroyBody(unit.enemies.get(i).body);
-                    unit.enemies.remove(i);
-                }
+        for (i = 0; i < unit.enemies.size(); i++){
+            if (Collections.binarySearch(numbers, unit.enemies.get(i).number) < 0) {
+                world.destroyBody(unit.enemies.get(i).body);
+                unit.enemies.remove(i);
+                i--;
             }
         }
-        unit.enemiesSize = MyPreference.pref.getInteger("EnemiesSize");
+        //unit.enemiesSize = MyPreference.pref.getInteger("EnemiesSize");
     }
 
     public void LoadUI(){

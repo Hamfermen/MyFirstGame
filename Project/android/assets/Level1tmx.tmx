@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="60" tileheight="60" infinite="0" nextlayerid="23" nextobjectid="27">
+<map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="60" tileheight="60" infinite="0" nextlayerid="23" nextobjectid="35">
  <tileset firstgid="1" source="TileSet.tsx"/>
  <layer id="1" name="Block" width="100" height="100">
   <data encoding="csv">
@@ -1066,9 +1066,31 @@
   <object id="13" x="1020" y="5580" height="180"/>
   <object id="14" x="2340" y="5580" height="180"/>
   <object id="15" x="2281.82" y="6351.52"/>
+  <object id="34" x="5220" y="5580" height="180"/>
  </objectgroup>
  <objectgroup id="5" name="EnemiesPos">
   <object id="23" x="1379" y="5655">
+   <point/>
+  </object>
+  <object id="27" x="1618.67" y="5654.67">
+   <point/>
+  </object>
+  <object id="28" x="1858.67" y="5650.67">
+   <point/>
+  </object>
+  <object id="29" x="2460" y="5657.33">
+   <point/>
+  </object>
+  <object id="30" x="2941.33" y="5654.67">
+   <point/>
+  </object>
+  <object id="31" x="3240" y="5653.33">
+   <point/>
+  </object>
+  <object id="32" x="3661.33" y="5656">
+   <point/>
+  </object>
+  <object id="33" x="4142.67" y="5654.67">
    <point/>
   </object>
  </objectgroup>

@@ -37,7 +37,7 @@ public class Npc_Merlin extends Npc {
 
     private World world;
 
-    private Animation MerlinState;
+    private Animation MerlinState, MerlinStateInteract;
 
     private Array<TextureRegion> frames;
 
@@ -73,6 +73,12 @@ public class Npc_Merlin extends Npc {
         for (int i = 0; i < 11; i++)
             frames.add(new TextureRegion(new Texture("Merlin_Idle.png"), i * 80, 0, 80, 130));
         MerlinState = new Animation(0.1f, frames);
+
+        frames.clear();
+
+        for (int i = 0; i < 11; i++)
+            frames.add(new TextureRegion(new Texture("merlin_idle_interact.png"), i * 80, 0, 80, 170));
+        MerlinStateInteract = new Animation(0.1f, frames);
     }
 
     public void MerlinUpdate() {
@@ -109,7 +115,8 @@ public class Npc_Merlin extends Npc {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - Const.playerX / 2 * Const.Unit_Scale, body.getPosition().y - Const.playerY / 2 * Const.Unit_Scale, 80 * Const.Unit_Scale, 130 * Const.Unit_Scale);
+        if (!NpcInteract) batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - Const.playerX / 2 * Const.Unit_Scale, body.getPosition().y - Const.playerY / 2 * Const.Unit_Scale, 80 * Const.Unit_Scale, 130 * Const.Unit_Scale);
+        else batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - Const.playerX / 2 * Const.Unit_Scale, body.getPosition().y - Const.playerY / 2 * Const.Unit_Scale, 80 * Const.Unit_Scale, 170 * Const.Unit_Scale);
     }
 
     private TextureRegion getFrame(float delta) {
@@ -118,7 +125,8 @@ public class Npc_Merlin extends Npc {
 
         TextureRegion region;
 
-        region = (TextureRegion) MerlinState.getKeyFrame(stateTimer, true);
+        if (!NpcInteract) region = (TextureRegion) MerlinState.getKeyFrame(stateTimer, true);
+        else region = (TextureRegion) MerlinStateInteract.getKeyFrame(stateTimer, true);
 
         if (!Const.freeze)
             stateTimer = nowFrame == previousFrame ? stateTimer + delta : 0;

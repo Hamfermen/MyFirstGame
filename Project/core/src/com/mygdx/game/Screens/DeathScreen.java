@@ -5,41 +5,45 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Timer;
-import com.mygdx.game.Const;
 import com.mygdx.game.MainClass;
 import com.mygdx.game.MyPreference;
 
-public class ToBeContinuedScreen implements Screen {
-
-    private Texture background;
+public class DeathScreen implements Screen {
 
     private Music music;
+
+    private Texture death;
+
+    private SpriteBatch batch;
 
     private Timer timer;
     private Timer.Task task;
 
-    private boolean load = false;
-
-    private SpriteBatch batch;
-
     private MainClass mainClass;
 
-    public ToBeContinuedScreen(MainClass mainClass){
+    boolean load = false;
+
+    public DeathScreen(MainClass mainClass){
         this.mainClass = mainClass;
     }
 
     @Override
     public void show() {
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("ToBeContinued.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("death.mp3"));
 
         music.setVolume(0.5f);
+
+        death = new Texture("death.png");
 
         batch = new SpriteBatch();
 
         timer = new Timer();
+
+        load = false;
 
         task = new Timer.Task() {
             @Override
@@ -49,39 +53,24 @@ public class ToBeContinuedScreen implements Screen {
                 task.cancel();
             }
         };
-
-        background = new Texture("ToBeContinued.png");
-
-        load = false;
     }
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        if (music.getPosition() >= 21.5f) {
-            batch.begin();
-            batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            batch.end();
-        }
+        if (!music.isPlaying()) music.play();
+        batch.begin();
+        batch.draw(death, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.end();
 
-        if (!task.isScheduled()) timer.scheduleTask(task, 35, 0);
+        if (!task.isScheduled()) timer.scheduleTask(task, 6, 0);
 
         if (load){
-            MyPreference.pref.clear();
-            MyPreference.setIsNewPreference(false);
-            MyPreference.setNewgame(true);
-            Const.newLevel = true;
-            Const.newGame = true;
-
             load = false;
-
             music.stop();
-
             mainClass.ChangeScreen(mainClass.mainMenuScreen);
         }
-
-        if (!music.isPlaying()) music.play();
     }
 
     @Override
@@ -106,7 +95,8 @@ public class ToBeContinuedScreen implements Screen {
 
     @Override
     public void dispose() {
-        batch.dispose();
         music.dispose();
+        death.dispose();
+        batch.dispose();
     }
 }

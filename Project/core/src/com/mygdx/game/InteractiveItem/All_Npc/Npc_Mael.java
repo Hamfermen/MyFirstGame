@@ -39,7 +39,7 @@ public class Npc_Mael extends Npc{
     private State nowFrame;
     private State previousFrame;
 
-    private Animation MaelState;
+    private Animation MaelState, MaelStateInteract;
 
     private Array<TextureRegion> frames;
 
@@ -81,6 +81,12 @@ public class Npc_Mael extends Npc{
         for (int i = 0; i < 9; i++)
             frames.add(new TextureRegion(new Texture("Fly.png"), i * 180, 0, 180, 180));
         MaelState = new Animation(0.1f, frames);
+
+        frames.clear();
+
+        for (int i = 0; i < 9; i++)
+            frames.add(new TextureRegion(new Texture("FlyInteract.png"), i * 180, 0, 180, 220));
+        MaelStateInteract = new Animation(0.1f, frames);
     }
 
     public void MaelUpdate() {
@@ -117,7 +123,8 @@ public class Npc_Mael extends Npc{
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - Const.MaelX / 2 * Const.Unit_Scale, body.getPosition().y - Const.MaelY / 2 * Const.Unit_Scale, Const.MaelX * Const.Unit_Scale, Const.MaelY * Const.Unit_Scale);
+        if (!NpcInteract) batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - Const.MaelX / 2 * Const.Unit_Scale, body.getPosition().y - Const.MaelY / 2 * Const.Unit_Scale, Const.MaelX * Const.Unit_Scale, Const.MaelY * Const.Unit_Scale);
+        else batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - Const.MaelX / 2 * Const.Unit_Scale, body.getPosition().y - Const.MaelY / 2 * Const.Unit_Scale, Const.MaelX * Const.Unit_Scale, 220 * Const.Unit_Scale);
     }
 
     private TextureRegion getFrame(float delta) {
@@ -125,7 +132,8 @@ public class Npc_Mael extends Npc{
 
         TextureRegion region;
 
-        region = (TextureRegion) MaelState.getKeyFrame(stateTimer, true);
+        if (!NpcInteract) region = (TextureRegion) MaelState.getKeyFrame(stateTimer, true);
+        else region = (TextureRegion) MaelStateInteract.getKeyFrame(stateTimer, true);
 
         if (!region.isFlipX()) region.flip(true, false);
 

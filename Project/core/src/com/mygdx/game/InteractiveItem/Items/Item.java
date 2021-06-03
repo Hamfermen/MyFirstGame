@@ -60,7 +60,7 @@ public class Item extends InteractiveItem {
 
    @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(texture, pos.x - 16 * Const.Unit_Scale * Const.SizeX, pos.y - 16 * Const.Unit_Scale * Const.SizeY, 32 * Const.Unit_Scale * Const.SizeX,32 * Const.Unit_Scale * Const.SizeY);
+        batch.draw(texture, pos.x - 16 * Const.Unit_Scale, pos.y - 16 * Const.Unit_Scale, 32 * Const.Unit_Scale,32 * Const.Unit_Scale);
     }
 
     private void createItems(World world, Vector2 pos, String bodyName) {

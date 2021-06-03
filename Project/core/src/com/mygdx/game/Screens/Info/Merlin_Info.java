@@ -3,6 +3,7 @@ package com.mygdx.game.Screens.Info;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Const;
 import com.mygdx.game.MainClass;
+import com.mygdx.game.MyPreference;
 import com.mygdx.game.Pair;
 import com.mygdx.game.Screens.ButtonsforScreen;
 
@@ -44,8 +46,14 @@ public class Merlin_Info implements Screen {
         this.mainClass = mainClass;
     }
 
+    private Music music;
+
     @Override
     public void show() {
+
+        music = Gdx.audio.newMusic(Gdx.files.internal("BackGroundMusic1.mp3"));
+        music.setVolume(MyPreference.getMusicValue());
+        music.setPosition(Const.time);
 
         batch = new SpriteBatch();
 
@@ -89,6 +97,8 @@ public class Merlin_Info implements Screen {
 
         merlin_info.draw();
         merlin_info.act();
+
+        if (!music.isPlaying()) music.play();
     }
 
     @Override
@@ -108,7 +118,7 @@ public class Merlin_Info implements Screen {
 
     @Override
     public void hide() {
-
+        dispose();
     }
 
     @Override
@@ -117,7 +127,7 @@ public class Merlin_Info implements Screen {
         background.dispose();
         portrait.dispose();
         merlin_info.dispose();
-
+        music.dispose();
     }
     private void createMerlinInfo() {
         List<String> a = new ArrayList<>();
