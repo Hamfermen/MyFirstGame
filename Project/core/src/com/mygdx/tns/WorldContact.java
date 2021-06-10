@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.tns.InteractiveItem.All_Npc.Npc;
 import com.mygdx.tns.InteractiveItem.Items.InteractiveItem;
 import com.mygdx.tns.Unit.Unit;
@@ -16,10 +17,13 @@ public class WorldContact implements ContactListener {
 
     private Unit unit;
 
-    public WorldContact(InteractiveItem items, Npc npc, Unit unit){
+    private World world;
+
+    public WorldContact(InteractiveItem items, Npc npc, Unit unit, World world){
         this.items = items;
         this.npc = npc;
         this.unit = unit;
+        this.world = world;
     }
 
     @Override
@@ -32,6 +36,7 @@ public class WorldContact implements ContactListener {
         checkPlayerAttack(fixtureA, fixtureB, true);
         checkEnemyAttack(fixtureA, fixtureB, true);
         checkEnemiesBarrier(fixtureA, fixtureB);
+        checkSplashAttack(fixtureA, fixtureB);
     }
 
     @Override
@@ -42,6 +47,7 @@ public class WorldContact implements ContactListener {
         checkItemInteract(fixtureA, fixtureB, false);
         checkNpcInteract(fixtureA, fixtureB, false);
         checkEnemyCanNotAttack(fixtureA, fixtureB);
+        checkPlayerAttack(fixtureA, fixtureB, false);
     }
 
     @Override
@@ -82,30 +88,36 @@ public class WorldContact implements ContactListener {
             unit.PlayerRight = canAttack;
             if (fixtureA.getUserData() == "right") {
                 unit.isPlayerAttack = true;
-                unit.whoGetDamage = (String) fixtureB.getBody().getUserData();
+                if (canAttack) unit.whoGetDamage = (String) fixtureB.getBody().getUserData();
+                else unit.whoCanNotAttack = (String) fixtureB.getBody().getUserData();
             }else {
                 unit.isPlayerAttack = true;
-                unit.whoGetDamage = (String) fixtureA.getBody().getUserData();
+                if (canAttack) unit.whoGetDamage = (String) fixtureA.getBody().getUserData();
+                else unit.whoCanNotAttack = (String) fixtureA.getBody().getUserData();
             }
         }
         if ((fixtureA.getUserData() == "left" && fixtureB.getUserData() == "Enemy"|| fixtureB.getUserData() == "left" && fixtureA.getUserData() == "Enemy")){
             unit.PlayerLeft = canAttack;
             if (fixtureA.getUserData() == "left") {
                 unit.isPlayerAttack = true;
-                unit.whoGetDamage = (String) fixtureB.getBody().getUserData();
+                if (canAttack) unit.whoGetDamage = (String) fixtureB.getBody().getUserData();
+                else unit.whoCanNotAttack = (String) fixtureB.getBody().getUserData();
             }else {
                 unit.isPlayerAttack = true;
-                unit.whoGetDamage = (String) fixtureA.getBody().getUserData();
+                if (canAttack) unit.whoGetDamage = (String) fixtureA.getBody().getUserData();
+                else unit.whoCanNotAttack = (String) fixtureA.getBody().getUserData();
             }
         }
         if (fixtureA.getUserData() == "Player" && fixtureB.getUserData() == "Enemy" || fixtureB.getUserData() == "Player" && fixtureA.getUserData() == "Enemy"){
             unit.middle = canAttack;
             if (fixtureA.getUserData() == "Player") {
                 unit.isPlayerAttack = true;
-                unit.whoGetDamage = (String) fixtureB.getBody().getUserData();
+                if (canAttack) unit.whoGetDamage = (String) fixtureB.getBody().getUserData();
+                else unit.whoCanNotAttack = (String) fixtureB.getBody().getUserData();
             }else {
                 unit.isPlayerAttack = true;
-                unit.whoGetDamage = (String) fixtureA.getBody().getUserData();
+                if (canAttack) unit.whoGetDamage = (String) fixtureA.getBody().getUserData();
+                else unit.whoCanNotAttack = (String) fixtureA.getBody().getUserData();
             }
         }
     }
@@ -116,10 +128,10 @@ public class WorldContact implements ContactListener {
             if (canAttack) {
                 if (fixtureA.getUserData() == "r_attackArea") {
                     unit.whoAttack = (String) fixtureA.getBody().getUserData();
-                    unit.whoGetDamage = (String) fixtureB.getBody().getUserData();
+                    //unit.whoGetDamage = (String) fixtureB.getBody().getUserData();
                 } else {
                     unit.whoAttack = (String) fixtureB.getBody().getUserData();
-                    unit.whoGetDamage = (String) fixtureA.getBody().getUserData();
+                    //unit.whoGetDamage = (String) fixtureA.getBody().getUserData();
                 }
             }else unit.whoAttack = "";
         }
@@ -128,10 +140,10 @@ public class WorldContact implements ContactListener {
             if (canAttack) {
                 if (fixtureA.getUserData() == "l_attackArea") {
                     unit.whoAttack = (String) fixtureA.getBody().getUserData();
-                    unit.whoGetDamage = (String) fixtureB.getBody().getUserData();
+                    //unit.whoGetDamage = (String) fixtureB.getBody().getUserData();
                 } else {
                     unit.whoAttack = (String) fixtureB.getBody().getUserData();
-                    unit.whoGetDamage = (String) fixtureA.getBody().getUserData();
+                    //unit.whoGetDamage = (String) fixtureA.getBody().getUserData();
                 }
             }else unit.whoAttack = "";
         }
@@ -176,6 +188,13 @@ public class WorldContact implements ContactListener {
     private void checkEnemiesBarrier(Fixture fixtureA, Fixture fixtureB){
         if (fixtureA.getUserData() == "EnemiesBarrier" && fixtureB.getUserData() == "Enemy" || fixtureB.getUserData() == "EnemiesBarrier" && fixtureA.getUserData() == "Enemy"){
             unit.whoChangeDirection.add((String) (fixtureB.getUserData() == "Enemy" ? fixtureB.getBody().getUserData() : fixtureA.getBody().getUserData()));
+        }
+    }
+
+    private void checkSplashAttack(Fixture fixtureA, Fixture fixtureB){
+        if ((fixtureA.getUserData() == "Splash" && fixtureB.getUserData() == "Enemy" || fixtureB.getUserData() == "Splash" && fixtureA.getUserData() == "Enemy")){
+            Const.toDestroy.add(fixtureA.getBody());
+            Const.toDestroy.add(fixtureB.getBody());
         }
     }
 }

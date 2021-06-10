@@ -17,8 +17,11 @@ import com.badlogic.gdx.utils.Timer;
 import com.mygdx.tns.Const;
 import com.mygdx.tns.GameController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Player extends Unit {
-    public enum State {STATE, RUN, JUMP, HIT, FALL, ATTACK}
+    public enum State {STATE, RUN, JUMP, FALL, ATTACK}
 
     private State nowFrame;
     private State previousFrame;
@@ -29,6 +32,7 @@ public class Player extends Unit {
     private Animation playerJump;
     private Animation playerFall;
     private Animation playerAttack;
+    private Animation splashAnimR, splashAnimL;
 
     private float stateTimer;
 
@@ -40,6 +44,8 @@ public class Player extends Unit {
     public boolean isAnimationAttack = false;
 
     public Body body;
+
+    public List<Body> splashes;
 
     public int health;
 
@@ -54,30 +60,49 @@ public class Player extends Unit {
     public boolean smallForm = false;
     private boolean isChanged = false;
 
-    private Timer timer;
-    private Timer.Task task;
-    private boolean timerOff = true;
+    private Timer timerHeal, timerSuperAttack;
+    private Timer.Task taskHeal, taskSuperAttack;
 
     private boolean heal = false;
     private boolean isHealed = true;
 
-    private boolean isEjustPressed = false;
+    private boolean superAttack = false;
+    private boolean isSuperAttacked = true;
+
+    private World world;
+
+    private float splashST;
 
     public Player(float x, float y, Vector2 pos, World world) {
+        splashes = new ArrayList<>();
+
+        splashST = 0;
+
         makeFrames();
 
-        CreateBody(x, y, pos, world);
+        this.world = world;
+
+        CreateBody(x, y, pos);
 
         this.setBounds(pos.x - x / 2, pos.y - y / 2, x, y);
 
-        timer = new Timer();
+        timerHeal = new Timer();
 
-        task = new Timer.Task() {
+        taskHeal = new Timer.Task() {
             @Override
             public void run() {
                 heal = true;
-                timerOff = true;
-                task.cancel();
+                taskHeal.cancel();
+            }
+        };
+
+        timerSuperAttack = new Timer();
+
+        taskSuperAttack = new Timer.Task() {
+            @Override
+            public void run() {
+                superAttack = true;
+                taskHeal.cancel();
             }
         };
 
@@ -117,6 +142,14 @@ public class Player extends Unit {
 
         Heal();
 
+        SuperAttack();
+
+        if (!splashes.isEmpty()){
+            for (int i = 0; i < splashes.size(); i++){
+                if (splashes.get(i).getFixtureList().isEmpty()) splashes.remove(i);
+            }
+        }
+
     }
 
     private void Move(float direction) {
@@ -146,7 +179,11 @@ public class Player extends Unit {
             }else {
                 batch.draw(getFrame(Gdx.graphics.getDeltaTime()), this.getX(), this.getY(),  60 * Const.Unit_Scale, 120 * Const.Unit_Scale);
             }
-
+        }
+        if (!splashes.isEmpty()) {
+            splashST += Gdx.graphics.getDeltaTime();
+            for (int i = 0; i < splashes.size(); i++)
+                batch.draw(splashes.get(i).getLinearVelocity().x > 0 ? (TextureRegion) splashAnimR.getKeyFrame(splashST, true) : (TextureRegion) splashAnimL.getKeyFrame(splashST, true), splashes.get(i).getPosition().x - 80 * Const.Unit_Scale, splashes.get(i).getPosition().y - 80 * Const.Unit_Scale, 160 * Const.Unit_Scale, 160 * Const.Unit_Scale);
         }
     }
 
@@ -154,8 +191,8 @@ public class Player extends Unit {
         if (Gdx.input.isKeyJustPressed(Input.Keys.E) || !GameController.interact) heal = false;
 
         if ((Gdx.input.isKeyPressed(Input.Keys.E) || GameController.interact) && score >= 20){
-            if (!task.isScheduled()) {
-                timer.scheduleTask(task, 3, 0);
+            if (!taskHeal.isScheduled()) {
+                timerHeal.scheduleTask(taskHeal, 3, 0);
             }
             if (heal && isHealed){
                 heal = false;
@@ -165,12 +202,32 @@ public class Player extends Unit {
             }
         }else{
             isHealed = true;
-            task.cancel();
-            timer.clear();
+            taskHeal.cancel();
+            timerHeal.clear();
         }
     }
 
-    private void CreateBody(float x, float y, Vector2 pos, World world) {
+    private void SuperAttack(){
+        if (!GameController.superAttack) superAttack = false;
+
+        if ((GameController.superAttack) && score >= 40){
+            if (!taskSuperAttack.isScheduled()) {
+                timerSuperAttack.scheduleTask(taskSuperAttack, 1.5f, 0);
+            }
+            if (superAttack && isSuperAttacked){
+                superAttack = false;
+                isSuperAttacked = false;
+                score -= 40;
+                createSlash();
+            }
+        }else{
+            isSuperAttacked = true;
+            taskSuperAttack.cancel();
+            timerSuperAttack.clear();
+        }
+    }
+
+    private void CreateBody(float x, float y, Vector2 pos) {
         BodyDef def = new BodyDef();
         def.type = BodyDef.BodyType.DynamicBody;
         def.fixedRotation = true;
@@ -210,6 +267,28 @@ public class Player extends Unit {
 
         body.setUserData("Player");
 
+    }
+
+    private void createSlash(){
+        BodyDef def = new BodyDef();
+        def.type = BodyDef.BodyType.DynamicBody;
+        def.fixedRotation = true;
+        def.position.set(body.getPosition().x + 92 * Const.Unit_Scale, body.getPosition().y + 16 * Const.Unit_Scale);
+
+        Body splash = world.createBody(def);
+
+        splash.setGravityScale(0);
+
+        PolygonShape box = new PolygonShape();
+        box.setAsBox(80 * Const.Unit_Scale,  80 * Const.Unit_Scale);
+        Fixture f = splash.createFixture(box, 5);
+        f.setUserData("Splash");
+
+        f.setSensor(true);
+
+        splash.setLinearVelocity(runningRight ? 300f * Gdx.graphics.getDeltaTime() : -300f * Gdx.graphics.getDeltaTime(), 0);
+
+        splashes.add(splash);
     }
 
     private void makeFrames() {
@@ -265,6 +344,17 @@ public class Player extends Unit {
             playerState = new Animation(0.1f, frames);
             frames.clear();
         }
+        for (int i = 0; i < 5; i++)
+            frames.add(new TextureRegion(new Texture("splash.png"), i * 160, 0, 160, 160));
+        splashAnimR = new Animation(0.1f, frames);
+        frames.clear();
+
+        for (int i = 0; i < 5; i++) {
+            frames.add(new TextureRegion(new Texture("splash.png"), i * 160, 0, 160, 160));
+            frames.get(i).flip(true, false);
+        }
+        splashAnimL = new Animation(0.1f, frames);
+        frames.clear();
     }
 
     private TextureRegion getFrame(float delta) {

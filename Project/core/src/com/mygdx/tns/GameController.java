@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 public class GameController extends Actor {
 
-    public enum Direction {RIGHT, LEFT, UP, ATTACK, INTERACT, PAUSE}
+    public enum Direction {RIGHT, LEFT, UP, ATTACK, INTERACT, PAUSE, SUPERATTACK}
 
     static public boolean right = false;
     static public boolean left = false;
@@ -16,6 +16,7 @@ public class GameController extends Actor {
     static public boolean attack = false;
     static public boolean interact = false;
     static public boolean pause = false;
+    static public boolean superAttack = false;
 
     private float x, y, wight, height;
 
@@ -53,6 +54,11 @@ public class GameController extends Actor {
                 setBounds(1200 * Const.SizeX, 660 * Const.SizeY, 80 * Const.SizeX, 80 * Const.SizeY);
                 x = 1200 * Const.SizeX; y = 660 * Const.SizeY; wight = 80 * Const.SizeX; height = 80 * Const.SizeY;
                 break;
+            case SUPERATTACK:
+                texture = new Texture("controller\\superAttack.png");
+                setBounds(890 * Const.SizeX, 120 * Const.SizeY, 160 * Const.SizeX, 160 * Const.SizeY);
+                x = 890 * Const.SizeX; y = 120 * Const.SizeY; wight = 160 * Const.SizeX; height = 160 * Const.SizeY;
+                break;
         }
         addListener(new InputListener(){
             @Override
@@ -77,6 +83,9 @@ public class GameController extends Actor {
                         break;
                     case PAUSE:
                         pause = true;
+                        break;
+                    case SUPERATTACK:
+                        superAttack = true;
                         break;
                 }
                 return true;
@@ -103,6 +112,9 @@ public class GameController extends Actor {
                     case PAUSE:
                         pause = false;
                         break;
+                    case SUPERATTACK:
+                        superAttack = false;
+                        break;
 
                 }
             }
@@ -115,6 +127,7 @@ public class GameController extends Actor {
         up = false;
         attack = false;
         interact = false;
+        superAttack = false;
     }
 
     @Override

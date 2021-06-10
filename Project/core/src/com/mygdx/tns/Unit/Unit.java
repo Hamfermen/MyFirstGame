@@ -44,6 +44,7 @@ public class Unit extends Actor implements GetDamage, CanAttack{
     public String whoAttack = "";
     public String whoCanNotAttack = "";
     public String whoGetDamage = "";
+    public String whoCanNotGetDamage = "";
     public List<String> whoChangeDirection;
 
     private TiledMap tiledMap;
@@ -64,12 +65,9 @@ public class Unit extends Actor implements GetDamage, CanAttack{
 
     @Override
     public void attack() {
-        if (isPlayerAttack) {
-            player.canAttack = false;
-            if ((player.runningRight && PlayerRight) || (!player.runningRight && PlayerLeft) || middle)
-                player.canAttack = true;
-            isPlayerAttack = false;
-        }
+        if ((player.runningRight && PlayerRight) || (!player.runningRight && PlayerLeft) || middle)
+            player.canAttack = true;
+        else player.canAttack = false;
         for (int i = 0; i < enemies.size(); i++) {
             if (whoAttack.equals("Enemy" + Integer.toString(i))) {
                 if ((enemies.get(i).runningRight && EnemyRight) || (!enemies.get(i).runningRight && EnemyLeft) || middle) {
@@ -77,7 +75,7 @@ public class Unit extends Actor implements GetDamage, CanAttack{
                     whoAttack = "";
                 }
             }
-            if (whoCanNotAttack.equals("Enemy" + Integer.toString(i))){
+            if (whoCanNotAttack.equals("Enemy" + Integer.toString(i))) {
                 enemies.get(i).canAttack = false;
                 whoCanNotAttack = "";
             }
@@ -132,8 +130,12 @@ public class Unit extends Actor implements GetDamage, CanAttack{
             attack();
             getDamage();
             for (int i = 0; i < enemies.size(); i++) {
-                if (whoGetDamage.equals("Enemy" + Integer.toString(i))) enemies.get(i).canGetDamage = true;
-                else enemies.get(i).canGetDamage = false;
+                if (whoGetDamage.equals("Enemy" + Integer.toString(i))) {
+                    System.out.println(whoGetDamage + " " + i);
+                    whoGetDamage = "";
+                    enemies.get(i).canGetDamage = true;
+                }
+                if (whoCanNotGetDamage.equals("Enemy" + Integer.toString(i))) enemies.get(i).canGetDamage = false;
                 enemies.get(i).EnemyUpdate(delta);
                 if (whoChangeDirection.size() > 0 && enemies.size() > 0) {
                     for (int j = 0; j < whoChangeDirection.size(); j++) {

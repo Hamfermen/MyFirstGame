@@ -210,7 +210,7 @@ public class Level_System implements Screen {
 
         UI = new UI(unit.player.body.getPosition(), unit.player);
 
-        world.setContactListener(new WorldContact(items, levelStorage.npc, unit));
+        world.setContactListener(new WorldContact(items, levelStorage.npc, unit, world));
 
         dialog = new Stage(dialogViewport, batch);
         dialog.addActor(text);
@@ -228,13 +228,14 @@ public class Level_System implements Screen {
         if (Const.newLevel) saves.LoadUI();
         Const.newLevel = false;
 
-        gameController = new GameController[6];
+        gameController = new GameController[7];
         gameController[0] = new GameController(GameController.Direction.RIGHT);
         gameController[1] = new GameController(GameController.Direction.LEFT);
         gameController[2] = new GameController(GameController.Direction.UP);
         gameController[3] = new GameController(GameController.Direction.ATTACK);
         gameController[4] = new GameController(GameController.Direction.INTERACT);
         gameController[5] = new GameController(GameController.Direction.PAUSE);
+        gameController[6] = new GameController(GameController.Direction.SUPERATTACK);
 
         controlCamera = new OrthographicCamera();
         controlCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -244,7 +245,7 @@ public class Level_System implements Screen {
 
         control = new Stage(controlViewport, batch);
 
-        for (int i = 0; i < 6; i++) control.addActor(gameController[i]);
+        for (int i = 0; i < 7; i++) control.addActor(gameController[i]);
         control.setDebugAll(true);
 
         Gdx.input.setInputProcessor(control);
@@ -260,6 +261,13 @@ public class Level_System implements Screen {
         Gdx.gl.glClearColor(0, 0.4f, 0.7f, 1);
 
         if (!music.isPlaying()) music.play();
+
+        if (!Const.toDestroy.isEmpty()) {
+            while (!Const.toDestroy.isEmpty()) {
+                world.destroyBody(Const.toDestroy.element());
+                Const.toDestroy.remove();
+            }
+        }
 
        /* batch.begin();
         batch.draw(background, 0,50, 640f, 340f);

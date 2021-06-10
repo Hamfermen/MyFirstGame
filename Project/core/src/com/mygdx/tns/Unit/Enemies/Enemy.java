@@ -131,6 +131,7 @@ public class Enemy extends Unit {
     }
 
     public void EnemyUpdate(float delta){
+        if (body.getFixtureList().isEmpty()) enemies.remove(this);
         if (canAttack && !task.isScheduled()) {
             stopMove = true;
             body.setLinearVelocity(0,0);

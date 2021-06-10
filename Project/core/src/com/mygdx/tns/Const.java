@@ -2,10 +2,13 @@ package com.mygdx.tns;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.mygdx.tns.Screens.Levels.Levels_Storage;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class Const {
     public static MainClass mainclass;
@@ -28,6 +31,8 @@ public class Const {
     public final static float MaelX = 180f, MaelY = 180f;
 
     public static boolean smallForm = false;
+
+    public static Queue<Body> toDestroy = new LinkedList<>();
 
     /*final public static short CATEGORY_PLAYER = 0x0001;
     final public static short CATEGORY_ENEMY = 0x0002;
