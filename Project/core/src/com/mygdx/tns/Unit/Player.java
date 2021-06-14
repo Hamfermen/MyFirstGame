@@ -69,6 +69,10 @@ public class Player extends Unit {
     private boolean superAttack = false;
     private boolean isSuperAttacked = true;
 
+    public boolean isHitBoxR = true;
+
+    public Body hitBoxB;
+
     private World world;
 
     private float splashST;
@@ -133,7 +137,9 @@ public class Player extends Unit {
         //position = new Vector2(body.getPosition().x - Const.playerX / 2 * Const.Unit_Scale, body.getPosition().y - Const.playerY / 2 * Const.Unit_Scale);
         if (Gdx.input.isKeyPressed(Input.Keys.A) || GameController.left) Move(-1 * delta);
         else if (Gdx.input.isKeyPressed(Input.Keys.D) || GameController.right) Move(1 * delta);
-        else body.setLinearVelocity(0, body.getLinearVelocity().y);
+        else {
+            body.setLinearVelocity(0, body.getLinearVelocity().y);
+        }
 
         if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) || GameController.up) && isGrounded) Jump();
         else if (/*(Gdx.input.isButtonPressed(Input.Buttons.LEFT) ||*/ GameController.attack && !smallForm) isAnimationAttack = true;
@@ -151,6 +157,8 @@ public class Player extends Unit {
             isPlayerDead = true;
             Const.freeze = true;
         }
+
+        if (hitBoxB != null) hitBoxB.setTransform(body.getPosition().x, body.getPosition().y, 0);
 
         Heal();
 
@@ -171,6 +179,7 @@ public class Player extends Unit {
     private void Jump() {
         isGrounded = false;
         body.applyLinearImpulse(new Vector2(0, 10), new Vector2(0, 0), true);
+        if (hitBoxB != null) hitBoxB.applyLinearImpulse(new Vector2(0, 10), new Vector2(0, 0), true);
     }
 
     @Override
@@ -266,7 +275,7 @@ public class Player extends Unit {
         leg.setUserData("leg");
         leg.setSensor(true);
 
-        PolygonShape f_attackArea = new PolygonShape();
+        /*PolygonShape f_attackArea = new PolygonShape();
         f_attackArea.setAsBox((Const.playerX + 20) / 2 * Const.Unit_Scale, Const.playerY / 2 * Const.Unit_Scale, new Vector2((Const.playerX + 10) * Const.Unit_Scale, 0), 0);
         Fixture r_attackArea = body.createFixture(f_attackArea, 0);
         r_attackArea.setUserData("right");
@@ -276,10 +285,30 @@ public class Player extends Unit {
         Fixture l_attackArea = body.createFixture(f_attackArea, 0);
         l_attackArea.setUserData("left");
         l_attackArea.setSensor(true);
-        f_attackArea.dispose();
+        f_attackArea.dispose();*/
 
         body.setUserData("Player");
 
+    }
+
+    public void createHitBox(){
+        BodyDef def = new BodyDef();
+        def.type = BodyDef.BodyType.DynamicBody;
+        def.fixedRotation = true;
+        def.position.set(body.getPosition().x, body.getPosition().y);
+
+        hitBoxB = world.createBody(def);
+
+        hitBoxB.setGravityScale(0);
+
+        isHitBoxR = runningRight;
+
+        PolygonShape f_attackArea = new PolygonShape();
+        f_attackArea.setAsBox((Const.playerX + 20) * Const.Unit_Scale, Const.playerY / 2 * Const.Unit_Scale, new Vector2((runningRight ? (Const.playerX / 2 + 20) : -(Const.playerX / 2 + 20)) * Const.Unit_Scale, 0), 0);
+        Fixture hitBox = hitBoxB.createFixture(f_attackArea, 0);
+        hitBox.setUserData("hitbox");
+        hitBox.setSensor(true);
+        f_attackArea.dispose();
     }
 
     private void createSlash(){

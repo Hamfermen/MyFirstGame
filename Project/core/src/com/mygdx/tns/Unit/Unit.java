@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.mygdx.tns.Const;
+import com.mygdx.tns.GameController;
 import com.mygdx.tns.MyPreference;
 import com.mygdx.tns.Unit.Enemies.Enemy;
 
@@ -65,9 +66,14 @@ public class Unit extends Actor implements GetDamage, CanAttack{
 
     @Override
     public void attack() {
-        if ((player.runningRight && PlayerRight) || (!player.runningRight && PlayerLeft) || middle)
+        /*if ((player.runningRight && PlayerRight) || (!player.runningRight && PlayerLeft) || middle)
             player.canAttack = true;
-        else player.canAttack = false;
+        else player.canAttack = false;*/
+        if (GameController.attack && player.hitBoxB == null) player.createHitBox();
+        else if ((player.hitBoxB != null && !GameController.attack) || (GameController.attack && player.isHitBoxR != player.runningRight)) {
+            world.destroyBody(player.hitBoxB);
+            player.hitBoxB = null;
+        }
         for (int i = 0; i < enemies.size(); i++) {
             if (whoAttack.equals("Enemy" + Integer.toString(i))) {
                 if ((enemies.get(i).runningRight && EnemyRight) || (!enemies.get(i).runningRight && EnemyLeft) || middle) {
@@ -85,12 +91,12 @@ public class Unit extends Actor implements GetDamage, CanAttack{
     @Override
     public void getDamage() {
         for (int i = 0; i < enemies.size(); i++) {
-            if (player.isPlayerAttack && player.canAttack) {
+            /*if (player.isPlayerAttack && player.canAttack) {
                 if (enemies.get(i).canGetDamage) {
                     enemies.get(i).health--;
                     //player.isPlayerAttack = false;
                 }
-            }
+            }*/
             if (enemies.get(i).isEnemyAttack && enemies.get(i).canAttack){
                 player.health--;
                 enemies.get(i).isEnemyAttack = false;

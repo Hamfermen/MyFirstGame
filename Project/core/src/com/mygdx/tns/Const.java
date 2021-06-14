@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.mygdx.tns.Screens.Levels.Levels_Storage;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -34,7 +35,7 @@ public class Const {
 
     public static boolean smallForm = false;
 
-    public static Queue<Body> toDestroy = new LinkedList<>();
+    public static HashSet<Body> toDestroy = new HashSet<>();
 
     /*final public static short CATEGORY_PLAYER = 0x0001;
     final public static short CATEGORY_ENEMY = 0x0002;

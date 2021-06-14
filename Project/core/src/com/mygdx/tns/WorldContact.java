@@ -33,7 +33,7 @@ public class WorldContact implements ContactListener {
         checkGround(fixtureA, fixtureB, true);
         checkItemInteract(fixtureA, fixtureB, true);
         checkNpcInteract(fixtureA, fixtureB, true);
-        checkPlayerAttack(fixtureA, fixtureB, true);
+        checkPlayerAttack(fixtureA, fixtureB);
         checkEnemyAttack(fixtureA, fixtureB, true);
         checkEnemiesBarrier(fixtureA, fixtureB);
         checkSplashAttack(fixtureA, fixtureB);
@@ -47,7 +47,6 @@ public class WorldContact implements ContactListener {
         checkItemInteract(fixtureA, fixtureB, false);
         checkNpcInteract(fixtureA, fixtureB, false);
         checkEnemyCanNotAttack(fixtureA, fixtureB);
-        checkPlayerAttack(fixtureA, fixtureB, false);
     }
 
     @Override
@@ -61,7 +60,9 @@ public class WorldContact implements ContactListener {
     private void checkGround(Fixture fixtureA, Fixture fixtureB, boolean isGrounded) {
         if (fixtureA.getUserData() == "leg" && (fixtureB.getUserData() == "Blocks" || fixtureB.getUserData() == "Platforms") || fixtureB.getUserData() == "leg" && (fixtureA.getUserData() == "Blocks" || fixtureA.getUserData() == "Platforms")) {
             unit.player.isGrounded = isGrounded;
-            if (isGrounded) unit.player.body.setLinearVelocity(unit.player.body.getLinearVelocity().x, 0);
+            if (isGrounded) {
+                unit.player.body.setLinearVelocity(unit.player.body.getLinearVelocity().x, 0);
+            }
         }
     }
 
@@ -83,8 +84,8 @@ public class WorldContact implements ContactListener {
         }
     }
 
-    private void checkPlayerAttack(Fixture fixtureA, Fixture fixtureB, boolean canAttack){
-        if ((fixtureA.getUserData() == "right" && fixtureB.getUserData() == "Enemy" || fixtureB.getUserData() == "right" && fixtureA.getUserData() == "Enemy" )){
+    private void checkPlayerAttack(Fixture fixtureA, Fixture fixtureB){
+        /*if ((fixtureA.getUserData() == "right" && fixtureB.getUserData() == "Enemy" || fixtureB.getUserData() == "right" && fixtureA.getUserData() == "Enemy" )){
             unit.PlayerRight = canAttack;
             if (fixtureA.getUserData() == "right") {
                 unit.isPlayerAttack = true;
@@ -118,6 +119,15 @@ public class WorldContact implements ContactListener {
                 unit.isPlayerAttack = true;
                 if (canAttack) unit.whoGetDamage = (String) fixtureA.getBody().getUserData();
                 else unit.whoCanNotAttack = (String) fixtureA.getBody().getUserData();
+            }
+        }*/
+        if (fixtureA.getUserData() == "hitbox" && fixtureB.getUserData() == "Enemy" || fixtureB.getUserData() == "hitbox" && fixtureA.getUserData() == "Enemy"){
+            if (fixtureA.getUserData() == "Enemy") {
+                Const.toDestroy.add(fixtureA.getBody());
+                Const.getScore++;
+            } else {
+                Const.toDestroy.add(fixtureB.getBody());
+                Const.getScore++;
             }
         }
     }

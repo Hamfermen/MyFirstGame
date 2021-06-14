@@ -19,6 +19,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -246,7 +247,7 @@ public class Level_System implements Screen {
         control = new Stage(controlViewport, batch);
 
         for (int i = 0; i < 7; i++) control.addActor(gameController[i]);
-        control.setDebugAll(true);
+        //control.setDebugAll(true);
 
         Gdx.input.setInputProcessor(control);
 
@@ -264,8 +265,9 @@ public class Level_System implements Screen {
 
         if (!Const.toDestroy.isEmpty()) {
             while (!Const.toDestroy.isEmpty()) {
-                world.destroyBody(Const.toDestroy.element());
-                Const.toDestroy.remove();
+                Body body = Const.toDestroy.iterator().next();
+                world.destroyBody(body);
+                Const.toDestroy.remove(body);
             }
         }
 
