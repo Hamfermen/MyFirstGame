@@ -63,14 +63,14 @@ public class MyPreference {
         pref.flush();
     }
 
-    public static float getPositionX(){return pref.getFloat("positionX", 0);}
+    public static float getPositionX(){return pref.getFloat("positionX", 3);}
 
     public static void setPositionX(float position){
         pref.putFloat("positionX", position);
         pref.flush();
     }
 
-    public static float getPositionY(){return pref.getFloat("positionY", 0);}
+    public static float getPositionY(){return pref.getFloat("positionY", 3);}
 
     public static void setPositionY(float position){
         pref.putFloat("positionY", position);
@@ -136,6 +136,20 @@ public class MyPreference {
 
     public static void setIsNewPreference(boolean isNewPreference){
         pref.putBoolean("isNewPreference", isNewPreference);
+        pref.flush();
+    }
+
+    public static boolean getIsNewLevel(){return pref.getBoolean("isNewLevel", true);}
+
+    public static void setIsNewLevel(boolean isNewLevel){
+        pref.putBoolean("isNewLevel", isNewLevel);
+        pref.flush();
+    }
+
+    public static boolean getIsNewGame(){return pref.getBoolean("isNewGame", true);}
+
+    public static void setIsNewGame(boolean isNewGame){
+        pref.putBoolean("isNewGame", isNewGame);
         pref.flush();
     }
 }

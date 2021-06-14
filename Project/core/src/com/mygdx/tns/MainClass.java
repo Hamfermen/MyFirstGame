@@ -61,8 +61,8 @@ public class MainClass extends Game {
 			MyPreference.pref.clear();
 			MyPreference.setIsNewPreference(false);
 			MyPreference.setNewgame(true);
-			Const.newLevel = true;
-			Const.newGame = true;
+			MyPreference.setIsNewGame(true);
+			MyPreference.setIsNewLevel(true);
 		}
 
 		setScreen(mainMenuScreen);

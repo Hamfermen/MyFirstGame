@@ -42,7 +42,7 @@ public class Finish extends InteractiveItem {
                 /*GameController.interact = false;
                 MyPreference.pref.clear();
                 MyPreference.setNewgame(true);*/
-                Const.newLevel = true;
+                MyPreference.setIsNewLevel(true);
                 //Const.newGame = true;
                 mainClass.ChangeScreen(mainClass.level_system.loadingScreen);
             }

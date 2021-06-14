@@ -16,10 +16,6 @@ public class Const {
 
     public static boolean freeze = false;
 
-    public static boolean newLevel;
-
-    public static boolean newGame;
-
     public static boolean cameraCanMove = false;
 
     public static int getScore = 0;

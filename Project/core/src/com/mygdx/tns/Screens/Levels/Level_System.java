@@ -122,7 +122,7 @@ public class Level_System implements Screen {
         music = Gdx.audio.newMusic(Gdx.files.internal("BackGroundMusic2.mp3"));
         music.setVolume(MyPreference.getMusicValue());
 
-        if (Const.newLevel) MyPreference.setDialogPos(0);
+        if (MyPreference.getIsNewLevel()) MyPreference.setDialogPos(0);
 
         batch = new SpriteBatch();
 
@@ -150,7 +150,7 @@ public class Level_System implements Screen {
         playerCamera.setToOrtho(false, 1280 * Const.Unit_Scale, 720 * Const.Unit_Scale);
         playerCamera.update();
 
-        if (Const.newLevel) {
+        if (MyPreference.getIsNewLevel()) {
             MyPreference.setPositionX(findPositions(tiledMap, Const.TiledMap_Scale, "PlayerStart").get(0).x);
             MyPreference.setPositionY(findPositions(tiledMap, Const.TiledMap_Scale, "PlayerStart").get(0).y);
             playerCamera.position.x = 10f;
@@ -225,9 +225,9 @@ public class Level_System implements Screen {
 
         saves = new Saves(world, unit, levelStorage.npc, items, UI, playerCamera, Const.levels.get(MyPreference.getLevel_number()));
 
-        if (!Const.newGame && !Const.newLevel) saves.Load();
-        if (Const.newLevel) saves.LoadUI();
-        Const.newLevel = false;
+        if (!MyPreference.getIsNewGame() && !MyPreference.getIsNewLevel()) saves.Load();
+        if (MyPreference.getIsNewLevel()) saves.LoadUI();
+        MyPreference.setIsNewLevel(false);
 
         gameController = new GameController[7];
         gameController[0] = new GameController(GameController.Direction.RIGHT);
@@ -340,8 +340,8 @@ public class Level_System implements Screen {
         if (unit.player.isPlayerDead) {
             MyPreference.pref.clear();
             MyPreference.setNewgame(true);
-            Const.newLevel = true;
-            Const.newGame = true;
+            MyPreference.setIsNewGame(true);
+            MyPreference.setIsNewLevel(true);
             mainClass.ChangeScreen(mainClass.deathScreen);
         }
 
@@ -416,7 +416,7 @@ public class Level_System implements Screen {
         MyPreference.setPositionX(unit.player.body.getPosition().x);
         MyPreference.setPositionY(unit.player.body.getPosition().y);*/
         if (!unit.player.isPlayerDead) {
-            Const.newGame = false;
+            MyPreference.setIsNewGame(false);
             saves.Save();
         }
         GameController.allFalse();

@@ -23,8 +23,8 @@ public class ButtonsforScreen extends Actor {
                         MyPreference.pref.clear();
                         MyPreference.setIsNewPreference(false);
                         MyPreference.setNewgame(true);
-                        Const.newLevel = true;
-                        Const.newGame = true;
+                        MyPreference.setIsNewGame(true);
+                        MyPreference.setIsNewLevel(true);
                     }else mainClass.ChangeScreen(screen);
                 }
                 else Gdx.app.exit();
