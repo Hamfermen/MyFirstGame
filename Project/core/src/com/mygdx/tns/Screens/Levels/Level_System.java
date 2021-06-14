@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -271,6 +272,8 @@ public class Level_System implements Screen {
             }
         }
 
+
+
        /* batch.begin();
         batch.draw(background, 0,50, 640f, 340f);
         batch.end();*/
@@ -357,7 +360,7 @@ public class Level_System implements Screen {
 
         if (UI.worldTime.getHours() >= 19) unit.player.isPlayerDead = true;
 
-        box2DDebugRenderer.render(world, playerCamera.combined);
+        //box2DDebugRenderer.render(world, playerCamera.combined);
 
         playerCamera.position.y = unit.player.getY() + 0.6f;
         playerCamera.update();
@@ -426,7 +429,7 @@ public class Level_System implements Screen {
     @Override
     public void dispose() {
         tiledMap.dispose();
-        box2DDebugRenderer.dispose();
+        //box2DDebugRenderer.dispose();
         world.dispose();
         level.dispose();
         ui.dispose();
