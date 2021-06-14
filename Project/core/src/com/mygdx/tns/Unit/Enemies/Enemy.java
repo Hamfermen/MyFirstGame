@@ -142,7 +142,8 @@ public class Enemy extends Unit {
         if (health <= 0) {
             if (getScore) {
                 getScore = false;
-                unit.player.score += 20;
+                //unit.player.score += 20;
+                Const.getScore++;
             }
             enemies.remove(this);
             world.destroyBody(body);

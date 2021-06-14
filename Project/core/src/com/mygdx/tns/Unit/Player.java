@@ -60,8 +60,8 @@ public class Player extends Unit {
     public boolean smallForm = false;
     private boolean isChanged = false;
 
-    private Timer timerHeal, timerSuperAttack;
-    private Timer.Task taskHeal, taskSuperAttack;
+    private Timer timerHeal, timerSuperAttack, timerCooldown;
+    private Timer.Task taskHeal, taskSuperAttack, taskCooldown;
 
     private boolean heal = false;
     private boolean isHealed = true;
@@ -102,7 +102,19 @@ public class Player extends Unit {
             @Override
             public void run() {
                 superAttack = true;
-                taskHeal.cancel();
+                if (!taskCooldown.isScheduled()) timerCooldown.scheduleTask(taskCooldown, 4, 0);
+                taskSuperAttack.cancel();
+            }
+        };
+
+        timerCooldown = new Timer();
+
+        taskCooldown = new Timer.Task() {
+            @Override
+            public void run() {
+                GameController.isCooldown = false;
+                GameController.stateTimer = 0;
+                taskCooldown.cancel();
             }
         };
 
@@ -210,11 +222,12 @@ public class Player extends Unit {
     private void SuperAttack(){
         if (!GameController.superAttack) superAttack = false;
 
-        if ((GameController.superAttack) && score >= 40){
+        if ((GameController.superAttack) && score >= 40 && !GameController.isCooldown ){
             if (!taskSuperAttack.isScheduled()) {
                 timerSuperAttack.scheduleTask(taskSuperAttack, 1.5f, 0);
             }
             if (superAttack && isSuperAttacked){
+                GameController.isCooldown = true;
                 superAttack = false;
                 isSuperAttacked = false;
                 score -= 40;
@@ -222,8 +235,8 @@ public class Player extends Unit {
             }
         }else{
             isSuperAttacked = true;
-            taskSuperAttack.cancel();
             timerSuperAttack.clear();
+            taskSuperAttack.cancel();
         }
     }
 

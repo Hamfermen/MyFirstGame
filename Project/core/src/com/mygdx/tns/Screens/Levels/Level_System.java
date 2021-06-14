@@ -382,6 +382,11 @@ public class Level_System implements Screen {
                 break;
         }
 
+        while (Const.getScore > 0){
+            Const.getScore--;
+            unit.player.score +=20;
+        }
+
         //if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) Const.freeze = !Const.freeze;
 
         if (!Const.freeze) world.step(1f / 60f, 6, 2);

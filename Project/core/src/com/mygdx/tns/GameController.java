@@ -1,14 +1,20 @@
 package com.mygdx.tns;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.utils.Array;
+import com.mygdx.tns.Unit.Player;
 
 public class GameController extends Actor {
 
     public enum Direction {RIGHT, LEFT, UP, ATTACK, INTERACT, PAUSE, SUPERATTACK}
+    public enum State {COOLDOWN};
 
     static public boolean right = false;
     static public boolean left = false;
@@ -17,12 +23,23 @@ public class GameController extends Actor {
     static public boolean interact = false;
     static public boolean pause = false;
     static public boolean superAttack = false;
+    static public boolean isCooldown = false;
+
+    private State nowFrame;
+    private State previousFrame;
+    public static float stateTimer;
+
+    private Direction direction;
+
+    private Animation cooldownAnimation;
 
     private float x, y, wight, height;
 
     private Texture texture;
 
     public GameController(final Direction direction){
+        makeFrames();
+        this.direction = direction;
         switch (direction) {
             case RIGHT:
                 texture = new Texture("controller\\right.png");
@@ -130,8 +147,35 @@ public class GameController extends Actor {
         superAttack = false;
     }
 
+    private void makeFrames() {
+        Array<TextureRegion> frames = new Array<TextureRegion>();
+        for (int i = 0; i < 4; i++) {
+            frames.add(new TextureRegion(new Texture("controller\\cooldown.png"), i * 160, 0, 160, 160));
+        }
+        cooldownAnimation = new Animation(1f, frames);
+        frames.clear();
+    }
+
+    private TextureRegion getFrame(float delta) {
+        nowFrame = getState();
+
+        TextureRegion region;
+
+        region = (TextureRegion) cooldownAnimation.getKeyFrame(stateTimer, false);
+
+        if (!Const.freeze)
+            stateTimer = nowFrame == previousFrame ? stateTimer + delta : 0;
+        previousFrame = nowFrame;
+        return region;
+    }
+
+    private State getState() {
+        return State.COOLDOWN;
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(texture, x, y, wight, height);
+        if (!isCooldown || direction != Direction.SUPERATTACK) batch.draw(texture, x, y, wight, height);
+        else batch.draw(getFrame(Gdx.graphics.getDeltaTime()), x, y, wight, height);
     }
 }

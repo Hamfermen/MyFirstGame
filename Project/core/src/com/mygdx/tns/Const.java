@@ -21,6 +21,8 @@ public class Const {
 
     public static boolean cameraCanMove = false;
 
+    public static int getScore = 0;
+
     public final static float SizeX = Gdx.graphics.getWidth() / 1280f;
     public final static float SizeY = Gdx.graphics.getHeight() / 720f;
 

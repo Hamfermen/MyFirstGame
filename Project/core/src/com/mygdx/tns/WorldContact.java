@@ -194,6 +194,7 @@ public class WorldContact implements ContactListener {
     private void checkSplashAttack(Fixture fixtureA, Fixture fixtureB){
         if ((fixtureA.getUserData() == "Splash" && fixtureB.getUserData() == "Enemy" || fixtureB.getUserData() == "Splash" && fixtureA.getUserData() == "Enemy")){
             Const.toDestroy.add(fixtureA.getBody());
+            Const.getScore++;
             Const.toDestroy.add(fixtureB.getBody());
         }
     }
