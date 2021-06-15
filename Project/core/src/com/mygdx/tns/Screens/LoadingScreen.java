@@ -64,7 +64,7 @@ public class LoadingScreen implements Screen {
         };
 
         font = new BitmapFont(Gdx.files.internal("font.fnt"));
-        text = new Label("Осталось " + Integer.toString(worldTime.getMinutes() == 0 ? 18 - worldTime.getHours() : 18 - worldTime.getHours() - 1) + " Часов " + Integer.toString(60 - worldTime.getMinutes()) + " Минут", new Label.LabelStyle(font, font.getColor()));
+        text = new Label("Осталось " + Integer.toString(worldTime.getMinutes() == 0 || worldTime.getHours() == 18 ? 18 - worldTime.getHours() : 18 - worldTime.getHours() - 1) + " Часов " + Integer.toString(60 - worldTime.getMinutes()) + " Минут", new Label.LabelStyle(font, font.getColor()));
         text.setFontScale(1 * Const.SizeX, 1 * Const.SizeY);
         text.setPosition(400 * Const.SizeX, 400 * Const.SizeY);
 

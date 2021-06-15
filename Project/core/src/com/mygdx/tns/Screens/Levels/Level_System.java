@@ -43,6 +43,10 @@ import com.mygdx.tns.WorldContact;
 import java.util.ArrayList;
 import java.util.List;
 
+import box2dLight.ConeLight;
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
+
 public class Level_System implements Screen {
     private Levels_Storage levelsStorage;
 
@@ -112,6 +116,9 @@ public class Level_System implements Screen {
 
     private GameController gameController[];
 
+    private RayHandler handler;
+    //private ConeLight light;
+
     public Level_System(MainClass mainClass){
         this.mainClass = mainClass;
     }
@@ -146,6 +153,18 @@ public class Level_System implements Screen {
         cameraCriticalPos = new ArrayList<>(findPositions(tiledMap, Const.TiledMap_Scale, "Camera"));
 
         box2DDebugRenderer = new Box2DDebugRenderer();
+
+        /*handler = new RayHandler(world);
+        handler.setAmbientLight(0.8f);
+        handler.setBlurNum(3);
+
+        //light = new ConeLight(handler, 128, new Color(255, 204, 51, 1), 20, 0, 10, -90, 90);
+
+        //PointLight light = new PointLight(handler, 128, new Color(255, 204, 51, 1), 20,0,10);
+
+        handler.setShadows(true);
+        light.setStaticLight(false);
+        light.setSoft(true);*/
 
         playerCamera = new OrthographicCamera();
         playerCamera.setToOrtho(false, 1280 * Const.Unit_Scale, 720 * Const.Unit_Scale);
