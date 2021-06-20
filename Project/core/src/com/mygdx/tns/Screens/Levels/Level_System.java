@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -26,6 +27,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.mygdx.tns.Const;
 import com.mygdx.tns.GameController;
@@ -51,9 +53,16 @@ public class Level_System implements Screen {
     private Levels_Storage levelsStorage;
 
     private class DialogImage extends Actor {
+        Texture bg;
+
+        public DialogImage(){
+            bg = new Texture("dialog_bg.png");
+        }
+
         @Override
         public void draw(Batch batch, float parentAlpha) {
             batch.draw(dialogImage, 0, 0, 256 * Const.SizeX, 256 * Const.SizeY);
+            batch.draw(bg, 256 * Const.SizeX, 0, 1024 * Const.SizeX, 256 * Const.SizeY);
         }
     }
 
@@ -197,10 +206,12 @@ public class Level_System implements Screen {
         dialogViewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), dialogCamera);
         deadScreenViewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), dialogCamera);
 
-        font = new BitmapFont(Gdx.files.internal("font.fnt"));
+        font = new BitmapFont(Gdx.files.internal("font2.fnt"));
         text = new Label("", new Label.LabelStyle(font, font.getColor()));
-        text.setFontScale(1 * Const.SizeX, 1 * Const.SizeY);
-        text.setPosition(300 * Const.SizeX, 200 * Const.SizeY);
+        text.setFontScale(0.9f * Const.SizeX, 0.9f * Const.SizeY);
+        text.setPosition(280 * Const.SizeX, 0 * Const.SizeY);
+        text.setSize(1000 * Const.SizeX, 240 * Const.SizeY);
+        text.setAlignment(Align.topLeft);
 
         items = new InteractiveItem(world, tiledMap, mainClass, unit);
 
@@ -234,8 +245,8 @@ public class Level_System implements Screen {
         world.setContactListener(new WorldContact(items, levelStorage.npc, unit, world));
 
         dialog = new Stage(dialogViewport, batch);
-        dialog.addActor(text);
         dialog.addActor(new DialogImage());
+        dialog.addActor(text);
         //dialog.setDebugAll(true);
 
         ui = new Stage(uiViewport, batch);

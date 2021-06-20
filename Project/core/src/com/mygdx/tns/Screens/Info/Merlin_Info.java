@@ -89,7 +89,7 @@ public class Merlin_Info implements Screen {
                else batch.draw(merlin[i].b[j].a, merlin[i].b[j].b.x * Const.SizeX, merlin[i].b[j].b.y * Const.SizeY, 24f * Const.SizeX, 24f * Const.SizeY);
             }
         }
-        batch.draw(portrait, 900 * Const.SizeX, 50 * Const.SizeY, 280 * Const.SizeX, 280 * Const.SizeY);
+        batch.draw(portrait, 900 * Const.SizeX, 40 * Const.SizeY, 280 * Const.SizeX, 280 * Const.SizeY);
         batch.end();
         //if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) mainClass.ChangeScreen(mainClass.menuScreen);
 
@@ -174,7 +174,7 @@ public class Merlin_Info implements Screen {
                 }
             }
             merlin[j] = new Pair<>(a.get(j), pos);
-            y-= 28;
+            y-= 30;
         }
 
     }

@@ -146,7 +146,9 @@ public class Npc_Merlin extends Npc {
         Merlin_dialog.add("Где сейчас Элизабет?");
         Merlin_dialog.add("Тебе нужно пройти через лес и поднятся на \n небесный остров.");
         Merlin_dialog.add("Хорошо не буду терять времени.");
-        Merlin_dialog.add("Будь осторожен!");
+        Merlin_dialog.add("Будь осторожен и не забудь, \nчто в тебе скрыта великая сила, убивая врагов, \nты накапливаешь силу с них.");
+        Merlin_dialog.add("Эту силу ты можешь потратить на лечение своих ран, \nесли ты зажмёшь кнопку \"Interact\" на 3 секунды");
+        Merlin_dialog.add("Или на высвобождение этой силы против врагов, \nесли ты зажмёшь кнопку \"Splash\" на 1.5 секунды");
     }
 
     private void setDialogImage() {
@@ -158,6 +160,8 @@ public class Npc_Merlin extends Npc {
         Merlin_dialogImage.add(new Texture("DialogImage\\eskanor_sf_4.png"));
         Merlin_dialogImage.add(new Texture("DialogImage\\merlin.png"));
         Merlin_dialogImage.add(new Texture("DialogImage\\eskanor_sf_1.png"));
+        Merlin_dialogImage.add(new Texture("DialogImage\\merlin2.png"));
+        Merlin_dialogImage.add(new Texture("DialogImage\\merlin2.png"));
         Merlin_dialogImage.add(new Texture("DialogImage\\merlin2.png"));
     }
 }
