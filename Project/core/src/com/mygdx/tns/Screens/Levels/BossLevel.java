@@ -173,6 +173,14 @@ public class BossLevel implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glClearColor(0, 0.4f, 0.7f, 1);
 
+        if (boss.health <= 0) {
+            MyPreference.pref.clear();
+            MyPreference.setIsNewGame(true);
+            MyPreference.setIsNewLevel(true);
+            mainClass.clearSaves();
+            mainClass.ChangeScreen(mainClass.winScreen);
+        }
+
         if (!music.isPlaying()) music.play();
 
         if (unit.player.health <= 0) {
@@ -230,14 +238,6 @@ public class BossLevel implements Screen {
         UI.UIUpdate();
 
         if (!Const.freeze) world.step(1f / 60f, 6, 2);
-
-        if (boss.health <= 0) {
-            MyPreference.pref.clear();
-            MyPreference.setIsNewGame(true);
-            MyPreference.setIsNewLevel(true);
-            mainClass.clearSaves();
-            mainClass.ChangeScreen(mainClass.winScreen);
-        }
     }
 
     @Override
