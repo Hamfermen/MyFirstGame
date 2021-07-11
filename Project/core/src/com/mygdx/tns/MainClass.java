@@ -99,7 +99,7 @@ public class MainClass extends Game {
 			try {
 				FileHandle file = Gdx.files.local("Saves.json");
 				file.delete();
-				file.writeString("{\"class\":com.mygdx.tns.Saves$Save,\"health\":5,\"time\":\"1630\",\"score\":0,\"dialogPos\":0}", true);
+				file.writeString("{\"class\":com.mygdx.tns.Saves$Save,\"health\":5,\"time\":\"1700\",\"score\":0,\"dialogPos\":0}", true);
 			}catch (Exception e){
 				System.out.println("Build error " + e.toString());
 			}
