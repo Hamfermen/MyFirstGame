@@ -12,7 +12,7 @@ public class WorldTime {
     }
 
     public void TimeUpdate(){
-        minutes += 5f / 300f;
+        minutes += 1f / 60f;
         if (minutes >= 60f) {
             hours++;
             minutes = 0;

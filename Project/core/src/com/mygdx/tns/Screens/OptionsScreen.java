@@ -20,32 +20,6 @@ import com.mygdx.tns.MyPreference;
 
 public class OptionsScreen implements Screen {
 
-    private class MusicButton extends Actor {
-        Texture on, off;
-
-        public MusicButton(){
-            on = new Texture("on.png");
-            off = new Texture("off.png");
-
-            this.setBounds(400 * Const.SizeX, 300 * Const.SizeY, 360 * Const.SizeX, 360 * Const.SizeY);
-
-            addListener(new InputListener(){
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    if (MyPreference.getMusicValue() == 0.5f) MyPreference.setMusicValue(0);
-                    else MyPreference.setMusicValue(0.5f);
-                    return true;
-                }
-            });
-        }
-
-        @Override
-        public void draw(Batch batch, float parentAlpha) {
-            if (MyPreference.getMusicValue() == 0.5f) batch.draw(on, 450 * Const.SizeX, 250 * Const.SizeY, 360 * Const.SizeX, 360 * Const.SizeY);
-            else batch.draw(off, 450 * Const.SizeX, 250 * Const.SizeY, 360 * Const.SizeX, 360 * Const.SizeY);
-        }
-    }
-
     private MainClass mainClass;
 
     private Stage options;
@@ -53,8 +27,6 @@ public class OptionsScreen implements Screen {
     private OrthographicCamera camera;
     private ScreenViewport viewport;
     private SpriteBatch batch;
-
-    private MusicButton musicButton;
 
     private GameController gameController;
 
@@ -77,13 +49,10 @@ public class OptionsScreen implements Screen {
 
         background = new Texture("background_info.png");
 
-        musicButton = new MusicButton();
-
         gameController = new GameController(GameController.Direction.PAUSE);
 
         options = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(options);
-        options.addActor(musicButton);
         options.addActor(gameController);
 
     }

@@ -88,3 +88,9 @@ task run(type: Exec) {
     def adb = path + "/platform-tools/adb"
     commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.mygdx.game/com.mygdx.game.AndroidLauncher'
 }
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.8.7'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.4'
+
+}

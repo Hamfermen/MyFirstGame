@@ -1,5 +1,6 @@
 package com.mygdx.tns.Screens.Levels;
 
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.tns.InteractiveItem.All_Npc.Npc;
 
 public class Levels_Storage {

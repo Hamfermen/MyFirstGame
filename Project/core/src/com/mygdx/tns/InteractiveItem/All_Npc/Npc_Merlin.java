@@ -52,7 +52,7 @@ public class Npc_Merlin extends Npc {
     private List<Texture> Merlin_dialogImage;
 
     public Npc_Merlin(World world, Vector2 pos) {
-        dialogPos = DialogPos;
+        dialogPos = 0;
 
         setDialog();
 
@@ -142,13 +142,13 @@ public class Npc_Merlin extends Npc {
         Merlin_dialog.add("");
         Merlin_dialog.add("Наконец-то ты добрался до сюда.");
         Merlin_dialog.add("Сколько у меня осталось времени?");
-        Merlin_dialog.add("До заката солнца остался час, после заката у тебя \n будет ещё час, чтобы добраться до Элизабет.");
+        Merlin_dialog.add("До заката солнца осталось два часа, после заката у тебя \n будет ещё час, чтобы добраться до Элизабет.");
         Merlin_dialog.add("Где сейчас Элизабет?");
         Merlin_dialog.add("Тебе нужно пройти через лес и поднятся на \n небесный остров.");
         Merlin_dialog.add("Хорошо не буду терять времени.");
         Merlin_dialog.add("Будь осторожен и не забудь, \nчто в тебе скрыта великая сила, убивая врагов, \nты накапливаешь силу с них.");
         Merlin_dialog.add("Эту силу ты можешь потратить на лечение своих ран, \nесли ты зажмёшь кнопку \"Interact\" на 3 секунды");
-        Merlin_dialog.add("Или на высвобождение этой силы против врагов, \nесли ты зажмёшь кнопку \"Splash\" на 1.5 секунды");
+        Merlin_dialog.add("Или на высвобождение этой силы против врагов, \nесли ты зажмёшь кнопку \"Splash\" на 0.75 секунды");
     }
 
     private void setDialogImage() {

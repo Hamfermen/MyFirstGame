@@ -1,20 +1,30 @@
 package com.mygdx.tns;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.tns.Screens.DeathScreen;
 import com.mygdx.tns.Screens.Info.Eskanor_Info;
 import com.mygdx.tns.Screens.Info.Merlin_Info;
+import com.mygdx.tns.Screens.Levels.BossLevel;
 import com.mygdx.tns.Screens.Levels.Level_System;
 import com.mygdx.tns.Screens.Levels.Levels_Storage;
 import com.mygdx.tns.Screens.MainMenuScreen;
 import com.mygdx.tns.Screens.MenuScreen;
 import com.mygdx.tns.Screens.OptionsScreen;
 import com.mygdx.tns.Screens.ToBeContinuedScreen;
+import com.mygdx.tns.Screens.WinScreen;
+import com.sun.tools.javac.util.Log;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 public class MainClass extends Game {
@@ -29,6 +39,8 @@ public class MainClass extends Game {
 	public Eskanor_Info eskanor_info;
 	public ToBeContinuedScreen toBeContinuedScreen;
 	public DeathScreen deathScreen;
+	public BossLevel bossLevel;
+	public WinScreen winScreen;
 
 	private HashMap<String, TextureRegion> words;
 	private Texture wordsTexture;
@@ -40,13 +52,18 @@ public class MainClass extends Game {
 
 	@Override
 	public void create () {
+
+		Gdx.input.setCatchBackKey(true);
+
 		words = new HashMap<>();
 		wordsTexture = new Texture("words.png");
 		createWords();
 		myPreference = new MyPreference();
+
 		//MyPreference.pref.clear();
 		Const.levels.add(new Levels_Storage("Level1tmx", true, "Merlin"));
-		Const.levels.add(new Levels_Storage("Level2tmx", true, "Mael"));
+		Const.levels.add(new Levels_Storage("newLevel2", true, "Merlin"));
+		Const.levels.add(new Levels_Storage("level3", true, "Mael"));
 
 		optionsScreen = new OptionsScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
@@ -56,14 +73,10 @@ public class MainClass extends Game {
 		eskanor_info = new Eskanor_Info(words, this);
 		toBeContinuedScreen = new ToBeContinuedScreen(this);
 		deathScreen = new DeathScreen(this);
+		bossLevel = new BossLevel(this);
+		winScreen = new WinScreen(this);
 
-		if (MyPreference.getIsNewPreference()) {
-			MyPreference.pref.clear();
-			MyPreference.setIsNewPreference(false);
-			MyPreference.setNewgame(true);
-			MyPreference.setIsNewGame(true);
-			MyPreference.setIsNewLevel(true);
-		}
+		if (MyPreference.getIsNewGame()) clearSaves();
 
 		setScreen(mainMenuScreen);
 	}
@@ -80,6 +93,16 @@ public class MainClass extends Game {
 	@Override
 	public void dispose () {
 		super.dispose();
+	}
+
+	public void clearSaves(){
+			try {
+				FileHandle file = Gdx.files.local("Saves.json");
+				file.delete();
+				file.writeString("{\"class\":com.mygdx.tns.Saves$Save,\"health\":5,\"time\":\"1630\",\"score\":0,\"dialogPos\":0}", true);
+			}catch (Exception e){
+				System.out.println("Build error " + e.toString());
+			}
 	}
 
 	public void ChangeScreen(Screen screenForChange){

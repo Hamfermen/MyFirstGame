@@ -56,13 +56,15 @@ public class Enemy extends Unit {
 
     public int number;
 
-    private Unit unit;
-
     public boolean canGetDamage = false;
 
     private boolean getScore = true;
 
-    public Enemy(int number, Unit unit, float x, float y, World world, Vector2 pos, String bodyName, List<Enemy> enemies) {
+    public int whatEnemy;
+
+    public Enemy(int number, Unit unit, float x, float y, World world, Vector2 pos, String bodyName, List<Enemy> enemies, int whatEnemy) {
+        this.whatEnemy = whatEnemy;
+
         makeFrames();
 
         this.number = number;
@@ -85,8 +87,6 @@ public class Enemy extends Unit {
         this.world = world;
 
         this.setBounds(pos.x - x / 2, pos.y - y / 2, x * Const.SizeX, y * Const.SizeY);
-
-        this.unit = unit;
 
         getScore = true;
     }
@@ -116,29 +116,35 @@ public class Enemy extends Unit {
 
         box.dispose();
 
-        PolygonShape f_attackArea = new PolygonShape();
-        f_attackArea.setAsBox(Const.playerX / 2 * Const.Unit_Scale, Const.playerY / 2 * Const.Unit_Scale, new Vector2((Const.playerX) * Const.Unit_Scale, 0), 0);
-        Fixture r_attackArea = body.createFixture(f_attackArea, 0);
-        r_attackArea.setUserData("r_attackArea");
-        r_attackArea.setSensor(true);
+        if (whatEnemy == 1) {
+            PolygonShape f_attackArea = new PolygonShape();
+            f_attackArea.setAsBox(Const.playerX / 2 * Const.Unit_Scale, Const.playerY / 2 * Const.Unit_Scale, new Vector2((Const.playerX) * Const.Unit_Scale, 0), 0);
+            Fixture r_attackArea = body.createFixture(f_attackArea, 0);
+            r_attackArea.setUserData("r_attackArea");
+            r_attackArea.setSensor(true);
 
-        f_attackArea.setAsBox(Const.playerX / 2 * Const.Unit_Scale, Const.playerY / 2 * Const.Unit_Scale, new Vector2((-Const.playerX) * Const.Unit_Scale, 0), 0);
-        Fixture l_attackArea = body.createFixture(f_attackArea, 0);
-        l_attackArea.setUserData("l_attackArea");
-        l_attackArea.setSensor(true);
-        f_attackArea.dispose();
+            f_attackArea.setAsBox(Const.playerX / 2 * Const.Unit_Scale, Const.playerY / 2 * Const.Unit_Scale, new Vector2((-Const.playerX) * Const.Unit_Scale, 0), 0);
+            Fixture l_attackArea = body.createFixture(f_attackArea, 0);
+            l_attackArea.setUserData("l_attackArea");
+            l_attackArea.setSensor(true);
+            f_attackArea.dispose();
+        }
 
     }
 
     public void EnemyUpdate(float delta){
         if (body.getFixtureList().isEmpty()) enemies.remove(this);
-        if (canAttack && !task.isScheduled()) {
-            stopMove = true;
-            body.setLinearVelocity(0,0);
-            timer.scheduleTask(task, 0.7f);
+        if (whatEnemy == 1) {
+            if (canAttack && !task.isScheduled()) {
+                stopMove = true;
+                body.setLinearVelocity(0, 0);
+                timer.scheduleTask(task, 0.7f);
+            } else isEnemyAttack = false;
+            if (!stopMove) Move(direction * delta);
+        }else {
+            Move(direction * delta);
+            isEnemyAttack = canAttack;
         }
-        else isEnemyAttack = false;
-        if (!stopMove) Move(direction * delta);
         if (health <= 0) {
             if (getScore) {
                 getScore = false;
@@ -152,7 +158,20 @@ public class Enemy extends Unit {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - 56 * Const.Unit_Scale, body.getPosition().y - 80 * Const.Unit_Scale, 56 * 2 * Const.Unit_Scale, 80 * 2 * Const.Unit_Scale);
+        switch (whatEnemy) {
+            case 1:
+                batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - 56 * Const.Unit_Scale, body.getPosition().y - 80 * Const.Unit_Scale, 56 * 2 * Const.Unit_Scale, 80 * 2 * Const.Unit_Scale);
+                break;
+            case 2:
+                batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - 56 * Const.Unit_Scale, body.getPosition().y - 80 * Const.Unit_Scale, 50 * Const.Unit_Scale, 100 * Const.Unit_Scale);
+                break;
+            case 3:
+                batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - 56 * Const.Unit_Scale, body.getPosition().y - 80 * Const.Unit_Scale, 100 * Const.Unit_Scale, 100 * Const.Unit_Scale);
+                break;
+            case 4:
+                batch.draw(getFrame(Gdx.graphics.getDeltaTime()), body.getPosition().x - 56 * Const.Unit_Scale, body.getPosition().y - 80 * Const.Unit_Scale, 100 * Const.Unit_Scale, 100 * Const.Unit_Scale);
+                break;
+        }
     }
 
     private void Move(float direction){
@@ -161,14 +180,33 @@ public class Enemy extends Unit {
 
     private void makeFrames() {
         Array<TextureRegion> frames = new Array<TextureRegion>();
-            for (int i = 0; i < 5; i++)
-            frames.add(new TextureRegion(new Texture("Ghost_Run.png"), i * 56, 0, 56, 80));
-        enemyRun = new Animation(0.2f, frames);
-        frames.clear();
-        for (int i = 0; i < 6; i++)
-            frames.add(new TextureRegion(new Texture("Ghost_Attack.png"), i * 56, 0, 56, 80));
-        enemyAttack = new Animation(0.1f, frames);
-        frames.clear();
+        switch (whatEnemy) {
+            case 1:
+                for (int i = 0; i < 5; i++)
+                    frames.add(new TextureRegion(new Texture("Ghost_Run.png"), i * 56, 0, 56, 80));
+                enemyRun = new Animation(0.2f, frames);
+                frames.clear();
+                for (int i = 0; i < 6; i++)
+                    frames.add(new TextureRegion(new Texture("Ghost_Attack.png"), i * 56, 0, 56, 80));
+                enemyAttack = new Animation(0.1f, frames);
+                frames.clear();
+                break;
+            case 2:
+                for (int i = 0; i < 2; i++)
+                    frames.add(new TextureRegion(new Texture("enemy1.png"), i * 50, 0, 50, 100));
+                enemyRun = new Animation(0.2f, frames);
+                break;
+            case 3:
+                for (int i = 0; i < 2; i++)
+                    frames.add(new TextureRegion(new Texture("enemy2.png"), i * 100, 0, 100, 100));
+                enemyRun = new Animation(0.2f, frames);
+                break;
+            case 4:
+                for (int i = 0; i < 2; i++)
+                    frames.add(new TextureRegion(new Texture("enemy3.png"), i * 100, 0, 100, 100));
+                enemyRun = new Animation(0.2f, frames);
+                break;
+        }
     }
 
     private TextureRegion getFrame(float delta) {

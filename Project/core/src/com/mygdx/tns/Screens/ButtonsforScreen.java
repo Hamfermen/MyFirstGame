@@ -14,7 +14,8 @@ import com.mygdx.tns.MyPreference;
 public class ButtonsforScreen extends Actor {
     private String buttonName;
     private Texture button;
-    public ButtonsforScreen(final Screen screen, final boolean exit, final boolean isNewGame, String buttonName, final MainClass mainClass){
+    private boolean isDraw;
+    public ButtonsforScreen(final Screen screen, final boolean exit, final boolean isNewGame, String buttonName, final MainClass mainClass, final boolean isDraw){
         addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -22,10 +23,11 @@ public class ButtonsforScreen extends Actor {
                     if (isNewGame) {
                         MyPreference.pref.clear();
                         MyPreference.setIsNewPreference(false);
-                        MyPreference.setNewgame(true);
                         MyPreference.setIsNewGame(true);
                         MyPreference.setIsNewLevel(true);
-                    }else mainClass.ChangeScreen(screen);
+                        mainClass.clearSaves();
+                    }
+                    mainClass.ChangeScreen(screen);
                 }
                 else Gdx.app.exit();
                 return true;
@@ -33,10 +35,11 @@ public class ButtonsforScreen extends Actor {
         });
         this.buttonName = buttonName;
         button = new Texture(buttonName);
+        this.isDraw = isDraw;
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (buttonName == "controller\\erease.png") batch.draw(button, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        if (isDraw) batch.draw(button, this.getX(), this.getY(), this.getWidth(), this.getHeight());
     }
 }

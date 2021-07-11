@@ -15,6 +15,7 @@ import com.mygdx.tns.MyPreference;
 import com.mygdx.tns.Unit.Enemies.Enemy;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Unit extends Actor implements GetDamage, CanAttack{
@@ -43,7 +44,7 @@ public class Unit extends Actor implements GetDamage, CanAttack{
     public int whoEnemiesGetDamage = -1;
 
     public String whoAttack = "";
-    public String whoCanNotAttack = "";
+    public List<String> whoCanNotAttack;
     public String whoGetDamage = "";
     public String whoCanNotGetDamage = "";
     public List<String> whoChangeDirection;
@@ -60,8 +61,8 @@ public class Unit extends Actor implements GetDamage, CanAttack{
         this.tiledMap = tiledMap;
         this.world = world;
         whoChangeDirection = new ArrayList<>();
+        whoCanNotAttack = new ArrayList<>();
         //enemiesDestroy = new ArrayList<Integer>();
-        position = new Vector2(MyPreference.getPositionX(), MyPreference.getPositionY());
     }
 
     @Override
@@ -69,11 +70,6 @@ public class Unit extends Actor implements GetDamage, CanAttack{
         /*if ((player.runningRight && PlayerRight) || (!player.runningRight && PlayerLeft) || middle)
             player.canAttack = true;
         else player.canAttack = false;*/
-        if (GameController.attack && player.hitBoxB == null) player.createHitBox();
-        else if ((player.hitBoxB != null && !GameController.attack) || (GameController.attack && player.isHitBoxR != player.runningRight)) {
-            world.destroyBody(player.hitBoxB);
-            player.hitBoxB = null;
-        }
         for (int i = 0; i < enemies.size(); i++) {
             if (whoAttack.equals("Enemy" + Integer.toString(i))) {
                 if ((enemies.get(i).runningRight && EnemyRight) || (!enemies.get(i).runningRight && EnemyLeft) || middle) {
@@ -81,9 +77,9 @@ public class Unit extends Actor implements GetDamage, CanAttack{
                     whoAttack = "";
                 }
             }
-            if (whoCanNotAttack.equals("Enemy" + Integer.toString(i))) {
+            if (Collections.binarySearch(whoCanNotAttack, "Enemy" + Integer.toString(i)) > -1) {
                 enemies.get(i).canAttack = false;
-                whoCanNotAttack = "";
+                whoCanNotAttack.remove("Enemy" + Integer.toString(i));
             }
         }
     }
@@ -98,7 +94,9 @@ public class Unit extends Actor implements GetDamage, CanAttack{
                 }
             }*/
             if (enemies.get(i).isEnemyAttack && enemies.get(i).canAttack){
+                if (enemies.get(i).whatEnemy != 1) enemies.get(i).canAttack = false;
                 player.health--;
+                //System.out.println(player.health);
                 enemies.get(i).isEnemyAttack = false;
             }
         }
@@ -120,7 +118,7 @@ public class Unit extends Actor implements GetDamage, CanAttack{
         enemiesSize = 0;
 
         for (int i = 0; i < EnemiesPos.size(); i++) {
-            enemies.add(new Enemy(i + 1, this,Const.playerX * Const.Unit_Scale, Const.playerY * Const.Unit_Scale, world, EnemiesPos.get(i), "Enemy" + Integer.toString(i), enemies));
+            enemies.add(new Enemy(i + 1, this,Const.playerX * Const.Unit_Scale, Const.playerY * Const.Unit_Scale, world, EnemiesPos.get(i), "Enemy" + Integer.toString(i), enemies, i % 4 + 1));
             if (enemiesSize == 0) enemiesSize++;
         }
     }
@@ -137,7 +135,6 @@ public class Unit extends Actor implements GetDamage, CanAttack{
             getDamage();
             for (int i = 0; i < enemies.size(); i++) {
                 if (whoGetDamage.equals("Enemy" + Integer.toString(i))) {
-                    System.out.println(whoGetDamage + " " + i);
                     whoGetDamage = "";
                     enemies.get(i).canGetDamage = true;
                 }

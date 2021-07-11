@@ -55,7 +55,7 @@ public class Player extends Unit {
 
     public boolean canAttack = false;
 
-    public int score;
+    public float score;
 
     public boolean smallForm = false;
     private boolean isChanged = false;
@@ -141,11 +141,17 @@ public class Player extends Unit {
             body.setLinearVelocity(0, body.getLinearVelocity().y);
         }
 
+        if (GameController.attack && hitBoxB == null) createHitBox();
+        else if ((hitBoxB != null && !GameController.attack) || (GameController.attack && isHitBoxR != runningRight)) {
+            world.destroyBody(hitBoxB);
+            hitBoxB = null;
+        }
+
         if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) || GameController.up) && isGrounded) Jump();
         else if (/*(Gdx.input.isButtonPressed(Input.Buttons.LEFT) ||*/ GameController.attack && !smallForm) isAnimationAttack = true;
         else isAnimationAttack = false;
 
-        if (canAttack && !smallForm) if (GameController.attack) isPlayerAttack = true;
+        if (canAttack && !smallForm) if (GameController.attack && !smallForm) isPlayerAttack = true;
         else isPlayerAttack = false;
 
         if (isChanged != smallForm) {
@@ -215,7 +221,7 @@ public class Player extends Unit {
             if (!taskHeal.isScheduled()) {
                 timerHeal.scheduleTask(taskHeal, 3, 0);
             }
-            if (heal && isHealed){
+            if (heal && isHealed && health < 5){
                 heal = false;
                 isHealed = false;
                 score -= 20;
@@ -233,7 +239,7 @@ public class Player extends Unit {
 
         if ((GameController.superAttack) && score >= 40 && !GameController.isCooldown ){
             if (!taskSuperAttack.isScheduled()) {
-                timerSuperAttack.scheduleTask(taskSuperAttack, 1.5f, 0);
+                timerSuperAttack.scheduleTask(taskSuperAttack, 0.75f, 0);
             }
             if (superAttack && isSuperAttacked){
                 GameController.isCooldown = true;

@@ -2,6 +2,8 @@ package com.mygdx.tns.InteractiveItem.Items;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -12,6 +14,8 @@ import com.mygdx.tns.Const;
 import com.mygdx.tns.GameController;
 import com.mygdx.tns.MainClass;
 import com.mygdx.tns.MyPreference;
+
+import javax.xml.transform.Templates;
 
 public class Finish extends InteractiveItem {
     private Vector2 pos;
@@ -24,12 +28,16 @@ public class Finish extends InteractiveItem {
 
     private MainClass mainClass;
 
+    private Texture cloud;
+
     public Finish(World world, Vector2 pos, String bodyName, MainClass mainClass) {
         this.pos = pos;
 
         createItems(world, pos, bodyName);
 
         this.mainClass = mainClass;
+
+        cloud = new Texture("cloud.png");
 
         this.world = world;
     }
@@ -43,9 +51,17 @@ public class Finish extends InteractiveItem {
                 MyPreference.pref.clear();
                 MyPreference.setNewgame(true);*/
                 MyPreference.setIsNewLevel(true);
+                mainClass.clearSaves();
                 //Const.newGame = true;
                 mainClass.ChangeScreen(mainClass.level_system.loadingScreen);
             }
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        if (FinishInteract) {
+            batch.draw(cloud, body.getPosition().x - 25 * Const.Unit_Scale, body.getPosition().y + 60 * Const.Unit_Scale, 50 * Const.Unit_Scale, 40 * Const.Unit_Scale);
+        }
     }
 
     private void createItems(World world, Vector2 pos, String bodyName) {

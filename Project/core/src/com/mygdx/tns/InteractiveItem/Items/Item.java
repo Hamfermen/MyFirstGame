@@ -51,7 +51,11 @@ public class Item extends InteractiveItem {
         if (ItemInteract) if (!Const.freeze && (Gdx.input.isKeyPressed(Input.Keys.E) || GameController.interact))  {
             GameController.interact = false;
             isRemove = true;
-            unit.player.score += 10;
+            if (unit.player.score <= 112) {
+                if (unit.player.score + 10 > 112)
+                    unit.player.score += 112 - unit.player.score ;
+                else unit.player.score += 10;
+            }
             world.destroyBody(body);
         }
     }

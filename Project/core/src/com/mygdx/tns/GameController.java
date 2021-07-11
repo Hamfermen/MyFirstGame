@@ -96,7 +96,7 @@ public class GameController extends Actor {
                         interact = true;
                         break;
                     case ATTACK:
-                        attack = true;
+                        attack = !Const.smallForm;
                         break;
                     case PAUSE:
                         pause = true;

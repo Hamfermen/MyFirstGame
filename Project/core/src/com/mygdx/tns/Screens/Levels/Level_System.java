@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.tns.Const;
 import com.mygdx.tns.GameController;
 import com.mygdx.tns.InteractiveItem.All_Npc.Npc;
@@ -50,7 +51,6 @@ import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 public class Level_System implements Screen {
-    private Levels_Storage levelsStorage;
 
     private class DialogImage extends Actor {
         Texture bg;
@@ -67,17 +67,20 @@ public class Level_System implements Screen {
     }
 
     private class BackGround extends Actor {
-        private Texture t, ts;
+        private Texture t, ts, lv2;
 
         public BackGround() {
             t = new Texture("TiledMapBackGround.png");
             ts = new Texture("Sky.png");
+            lv2 = new Texture("level2bg.png");
         }
 
         @Override
         public void draw(Batch batch, float parentAlpha) {
-            batch.draw(t, 0,  -0.2f * Const.SizeY, playerCamera.viewportWidth * 4.6875f, playerCamera.viewportHeight * 1.805556f);
-            batch.draw(ts, 0, playerCamera.viewportHeight * 1.805556f - 0.2f * Const.SizeY, playerCamera.viewportWidth * 4.6875f, playerCamera.viewportHeight * 1.805556f);
+            if (MyPreference.getLevel_number() == 0) {
+                batch.draw(t, 0, -0.2f * Const.SizeY, playerCamera.viewportWidth * 4.6875f, playerCamera.viewportHeight * 1.805556f);
+                batch.draw(ts, 0, playerCamera.viewportHeight * 1.805556f - 0.2f * Const.SizeY, playerCamera.viewportWidth * 4.6875f, playerCamera.viewportHeight * 1.805556f);
+            }else batch.draw(lv2, 0, 0,6000 * Const.Unit_Scale, 3525 * Const.Unit_Scale);
         }
     }
 
@@ -94,7 +97,8 @@ public class Level_System implements Screen {
     private TiledMapRenderer tiledMapRenderer;
 
     private OrthographicCamera uiCamera, playerCamera, dialogCamera, deadScreenCamera, controlCamera;
-    private ExtendViewport uiViewport, playerViewport, dialogViewport, deadScreenViewport, controlViewport;
+    private ExtendViewport playerViewport, dialogViewport, deadScreenViewport, controlViewport;
+    private StretchViewport uiViewport;
 
     private Box2DDebugRenderer box2DDebugRenderer;
 
@@ -125,21 +129,17 @@ public class Level_System implements Screen {
 
     private GameController gameController[];
 
-    private RayHandler handler;
-    //private ConeLight light;
-
     public Level_System(MainClass mainClass){
         this.mainClass = mainClass;
     }
 
     @Override
     public void show() {
+
         Const.freeze = false;
 
         music = Gdx.audio.newMusic(Gdx.files.internal("BackGroundMusic2.mp3"));
         music.setVolume(MyPreference.getMusicValue());
-
-        if (MyPreference.getIsNewLevel()) MyPreference.setDialogPos(0);
 
         batch = new SpriteBatch();
 
@@ -158,7 +158,7 @@ public class Level_System implements Screen {
         TMObjectsUtils.buildBuildingsBodies(tiledMap, world, Const.TiledMap_Scale, "Blocks");
         TMObjectsUtils.buildBuildingsBodies(tiledMap, world, Const.TiledMap_Scale, "WorldBarrier");
         TMObjectsUtils.buildBuildingsBodies(tiledMap, world, Const.TiledMap_Scale, "EnemiesBarrier");
-        if (MyPreference.getLevel_number() == 1) TMObjectsUtils.buildBuildingsBodies(tiledMap, world, Const.TiledMap_Scale, "Platforms");
+        //if (MyPreference.getLevel_number() == 1) TMObjectsUtils.buildBuildingsBodies(tiledMap, world, Const.TiledMap_Scale, "Platforms");
         cameraCriticalPos = new ArrayList<>(findPositions(tiledMap, Const.TiledMap_Scale, "Camera"));
 
         box2DDebugRenderer = new Box2DDebugRenderer();
@@ -179,14 +179,8 @@ public class Level_System implements Screen {
         playerCamera.setToOrtho(false, 1280 * Const.Unit_Scale, 720 * Const.Unit_Scale);
         playerCamera.update();
 
-        if (MyPreference.getIsNewLevel()) {
-            MyPreference.setPositionX(findPositions(tiledMap, Const.TiledMap_Scale, "PlayerStart").get(0).x);
-            MyPreference.setPositionY(findPositions(tiledMap, Const.TiledMap_Scale, "PlayerStart").get(0).y);
-            playerCamera.position.x = 10f;
-        }
-
-        uiCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        uiCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        uiCamera = new OrthographicCamera(1280, 720);
+        uiCamera.setToOrtho(false, 1280, 720);
         uiCamera.update();
 
         dialogCamera = new OrthographicCamera();
@@ -198,15 +192,17 @@ public class Level_System implements Screen {
         deadScreenCamera.update();
 
         unit = new Unit(world, tiledMap);
+        unit.position = findPositions(tiledMap, Const.TiledMap_Scale, "PlayerStart").get(0);
+        playerCamera.position.x = 10f;
         if (levelStorage.haveEnemies) unit.createEnemies();
         unit.createPlayer();
 
         playerViewport = new ExtendViewport(playerCamera.viewportWidth, playerCamera.viewportHeight, playerCamera);
-        uiViewport = new ExtendViewport(uiCamera.viewportWidth, uiCamera.viewportHeight, uiCamera);
+        uiViewport = new StretchViewport(1280, 720, uiCamera);
         dialogViewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), dialogCamera);
         deadScreenViewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), dialogCamera);
 
-        font = new BitmapFont(Gdx.files.internal("font2.fnt"));
+        font = new BitmapFont(Gdx.files.internal("test_f.fnt"));
         text = new Label("", new Label.LabelStyle(font, font.getColor()));
         text.setFontScale(0.9f * Const.SizeX, 0.9f * Const.SizeY);
         text.setPosition(280 * Const.SizeX, 0 * Const.SizeY);
@@ -260,14 +256,15 @@ public class Level_System implements Screen {
         if (MyPreference.getIsNewLevel()) saves.LoadUI();
         MyPreference.setIsNewLevel(false);
 
-        gameController = new GameController[7];
+        UI.startTime();
+
+        gameController = new GameController[6];
         gameController[0] = new GameController(GameController.Direction.RIGHT);
         gameController[1] = new GameController(GameController.Direction.LEFT);
         gameController[2] = new GameController(GameController.Direction.UP);
         gameController[3] = new GameController(GameController.Direction.ATTACK);
         gameController[4] = new GameController(GameController.Direction.INTERACT);
-        gameController[5] = new GameController(GameController.Direction.PAUSE);
-        gameController[6] = new GameController(GameController.Direction.SUPERATTACK);
+        gameController[5] = new GameController(GameController.Direction.SUPERATTACK);
 
         controlCamera = new OrthographicCamera();
         controlCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -277,12 +274,12 @@ public class Level_System implements Screen {
 
         control = new Stage(controlViewport, batch);
 
-        for (int i = 0; i < 7; i++) control.addActor(gameController[i]);
+        for (int i = 0; i < 6; i++) control.addActor(gameController[i]);
         //control.setDebugAll(true);
 
         Gdx.input.setInputProcessor(control);
 
-        loadingScreen = new LoadingScreen(mainClass, UI.worldTime, mainClass.level_system);
+        loadingScreen = new LoadingScreen(mainClass, UI.worldTime);
 
         music.setLooping(true);
     }
@@ -315,8 +312,7 @@ public class Level_System implements Screen {
 
         UI.UIUpdate();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyJustPressed(Input.Keys.BACK) || GameController.pause) {
-            GameController.pause = false;
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
             mainClass.ChangeScreen(mainClass.menuScreen);
         }
 
@@ -350,7 +346,10 @@ public class Level_System implements Screen {
                     dialog.getViewport().apply();
                     dialog.act();
                     dialog.draw();
-                    if (!(Mael.Mael.dialog.dialogPos < Mael.Mael.dialog.dialog.size() - 1)) mainClass.ChangeScreen(mainClass.toBeContinuedScreen);
+                    if (!(Mael.Mael.dialog.dialogPos < Mael.Mael.dialog.dialog.size() - 1)) {
+                        Mael.Mael.dialog.dialogPos--;
+                        mainClass.ChangeScreen(mainClass.bossLevel);
+                    }
                     if (Const.smallForm) {
                         Mael.Mael.Mael_dialog.clear();
                         Mael.Mael.Mael_dialog.add("");
@@ -372,9 +371,9 @@ public class Level_System implements Screen {
 
         if (unit.player.isPlayerDead) {
             MyPreference.pref.clear();
-            MyPreference.setNewgame(true);
             MyPreference.setIsNewGame(true);
             MyPreference.setIsNewLevel(true);
+            mainClass.clearSaves();
             mainClass.ChangeScreen(mainClass.deathScreen);
         }
 
@@ -417,9 +416,13 @@ public class Level_System implements Screen {
                 break;
         }
 
-        while (Const.getScore > 0){
+        while (Const.getScore > 0) {
             Const.getScore--;
-            unit.player.score +=20;
+            if (unit.player.score <= 112) {
+                if (unit.player.score + 16 > 112)
+                    unit.player.score += 112 - unit.player.score ;
+                else unit.player.score += 16;
+            }
         }
 
         //if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) Const.freeze = !Const.freeze;
@@ -459,13 +462,17 @@ public class Level_System implements Screen {
     @Override
     public void dispose() {
         tiledMap.dispose();
+        font.dispose();
         //box2DDebugRenderer.dispose();
-        world.dispose();
         level.dispose();
         ui.dispose();
+        control.dispose();
+        BackGround.dispose();
         dialog.dispose();
         batch.dispose();
         music.dispose();
+        dialogImage.dispose();
+        world.dispose();
     }
 
     private List<Vector2> findPositions(TiledMap tiledMap, float density, String layerName) {

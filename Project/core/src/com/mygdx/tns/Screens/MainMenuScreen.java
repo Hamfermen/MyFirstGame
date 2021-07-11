@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -20,7 +21,7 @@ public class MainMenuScreen implements Screen {
     private OrthographicCamera camera;
     private ScreenViewport viewport;
     private SpriteBatch batch;
-    private ButtonsforScreen ereaseProgres, playnew, play,exit, option;
+    private ButtonsforScreen newgame, play, exit, bossLevel;
     private Texture background;
     private MainClass mainClass;
     private BitmapFont title;
@@ -51,13 +52,17 @@ public class MainMenuScreen implements Screen {
 
         viewport = new ScreenViewport(camera);
 
-        play = new ButtonsforScreen(mainClass.level_system, false, false,"Play.png", mainClass);
-        play.setSize(100f * Const.SizeX, 100f * Const.SizeY);
-        play.setPosition(580f * Const.SizeX, 405f * Const.SizeY);
+       /* bossLevel = new ButtonsforScreen(mainClass.bossLevel, false, false,"Buttons\\continue.png", mainClass, true);
+        bossLevel.setSize(300f * Const.SizeX, 75f * Const.SizeY);
+        bossLevel.setPosition(200 * Const.SizeX, 200f * Const.SizeY);*/
 
-        ereaseProgres = new ButtonsforScreen(mainClass.level_system, false, true,"controller\\erease.png", mainClass);
-        ereaseProgres.setSize(100f * Const.SizeX, 100f * Const.SizeY);
-        ereaseProgres.setPosition(0 * Const.SizeX, 0 * Const.SizeY);
+        play = new ButtonsforScreen(mainClass.level_system, false, false,"Buttons\\continue.png", mainClass, true);
+        play.setSize(300f * Const.SizeX, 75f * Const.SizeY);
+        play.setPosition(960f * Const.SizeX, 200f * Const.SizeY);
+
+        newgame = new ButtonsforScreen(mainClass.level_system, false, true,"Buttons\\newgame.png", mainClass, true);
+        newgame.setSize(300f * Const.SizeX, 75f * Const.SizeY);
+        newgame.setPosition(960 * Const.SizeX, 110 * Const.SizeY);
 
         /*play = new ButtonsforScreen(mainClass.level_system, false, false,"Play.png", mainClass);
         play.setSize(300f * Const.SizeX, 75f * Const.SizeY);
@@ -67,16 +72,17 @@ public class MainMenuScreen implements Screen {
         option.setSize(300f * Const.SizeX, 75f * Const.SizeY);
         option.setPosition(653.2f * Const.SizeX, 0);*/
 
-        exit = new ButtonsforScreen(mainClass.optionsScreen, true, false,"Exit.png", mainClass);
-        exit.setSize(65f * Const.SizeX, 65f * Const.SizeY);
-        exit.setPosition(717f * Const.SizeX, 465f * Const.SizeY);
+        exit = new ButtonsforScreen(mainClass.optionsScreen, true, false,"Buttons\\exit.png", mainClass, true);
+        exit.setSize(300f * Const.SizeX, 75f * Const.SizeY);
+        exit.setPosition(960 * Const.SizeX, 20 * Const.SizeY);
 
-        background = new Texture("background.png");
+        background = new Texture("background1.png");
 
         menuScreen = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(menuScreen);
-        menuScreen.addActor(play);
-        menuScreen.addActor(ereaseProgres);
+
+        if (MyPreference.pref.getBoolean("isNewPreferenc", true) == false) menuScreen.addActor(play);
+        menuScreen.addActor(newgame);
         menuScreen.addActor(text);
         //if (MyPreference.isNewgame()) menuScreen.addActor(play);
         //menuScreen.addActor(option);
@@ -90,7 +96,7 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (!music.isPlaying()) music.play();
         batch.begin();
-        batch.draw(background, 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight());
+        batch.draw(background, 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight());;
         batch.end();
         menuScreen.act();
         menuScreen.draw();

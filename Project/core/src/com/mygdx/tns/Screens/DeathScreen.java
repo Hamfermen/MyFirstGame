@@ -35,7 +35,7 @@ public class DeathScreen implements Screen {
 
         music.setVolume(0.5f);
 
-        death = new Texture("death.png");
+        death = new Texture("GameOver.png");
 
         batch = new SpriteBatch();
 

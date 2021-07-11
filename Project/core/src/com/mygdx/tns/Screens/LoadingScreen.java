@@ -17,28 +17,26 @@ import com.mygdx.tns.WorldTime;
 
 public class LoadingScreen implements Screen {
 
-    BitmapFont font;
-    Label text;
+    private BitmapFont font;
+    private Label text;
 
-    SpriteBatch batch;
+    private SpriteBatch batch;
 
-    MainClass mainClass;
-    WorldTime worldTime;
-    Level_System level_system;
+    private MainClass mainClass;
+    private WorldTime worldTime;
 
-    Stage loadingScreen;
-    OrthographicCamera loadingScreenCamera;
-    ExtendViewport loadingScreenViewport;
+    private Stage loadingScreen;
+    private OrthographicCamera loadingScreenCamera;
+    private ExtendViewport loadingScreenViewport;
 
-    Timer timer;
-    Timer.Task task;
+    private Timer timer;
+    private Timer.Task task;
 
-    boolean load = false;
+    private boolean load = false;
 
-    public LoadingScreen(MainClass mainClass, WorldTime worldTime, Level_System level_system){
+    public LoadingScreen(MainClass mainClass, WorldTime worldTime){
         this.worldTime = worldTime;
         this.mainClass = mainClass;
-        this.level_system = level_system;
     }
 
     @Override
@@ -60,13 +58,14 @@ public class LoadingScreen implements Screen {
             @Override
             public void run() {
                 load = true;
+                task.cancel();
             }
         };
 
-        font = new BitmapFont(Gdx.files.internal("font.fnt"));
-        text = new Label("Осталось " + Integer.toString(worldTime.getMinutes() == 0 || worldTime.getHours() == 18 ? 18 - worldTime.getHours() : 18 - worldTime.getHours() - 1) + " Часов " + Integer.toString(60 - worldTime.getMinutes()) + " Минут", new Label.LabelStyle(font, font.getColor()));
+        font = new BitmapFont(Gdx.files.internal("test_f.fnt"));
+        text = new Label("Осталось " + Integer.toString(worldTime.getMinutes() == 0 || worldTime.getHours() == 18 ? 18 - worldTime.getHours() : 18 - worldTime.getHours() - 1) + " Часов " + Integer.toString(60 - worldTime.getMinutes()) + " Минут" + " до" + (Const.smallForm ? " смерти" : " смены формы"), new Label.LabelStyle(font, font.getColor()));
         text.setFontScale(1 * Const.SizeX, 1 * Const.SizeY);
-        text.setPosition(400 * Const.SizeX, 400 * Const.SizeY);
+        text.setPosition(200 * Const.SizeX, 400 * Const.SizeY);
 
         loadingScreen.addActor(text);
 
@@ -80,7 +79,9 @@ public class LoadingScreen implements Screen {
         loadingScreen.act();
         loadingScreen.draw();
         if (!task.isScheduled()) timer.scheduleTask(task, 3, 0);
-        if (load) mainClass.ChangeScreen(level_system);
+        if (load) {
+            mainClass.ChangeScreen(mainClass.level_system);
+        }
     }
 
     @Override
@@ -106,5 +107,7 @@ public class LoadingScreen implements Screen {
     @Override
     public void dispose() {
         loadingScreen.dispose();
+        font.dispose();
+        batch.dispose();
     }
 }

@@ -19,8 +19,6 @@ public class Dialog {
 
     public void nextDialog(){
         if (dialogPos < dialog.size() - 1) dialogPos++;
-
-        MyPreference.setDialogPos(dialogPos);
     }
 
     public String getNowDialog() {

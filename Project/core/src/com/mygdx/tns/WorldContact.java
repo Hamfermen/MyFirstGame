@@ -174,23 +174,23 @@ public class WorldContact implements ContactListener {
     private void checkEnemyCanNotAttack(Fixture fixtureA, Fixture fixtureB){
         if ((fixtureA.getUserData() == "r_attackArea" && fixtureB.getUserData() == "Player" || fixtureB.getUserData() == "r_attackArea" && fixtureA.getUserData() == "Player")) {
                 if (fixtureA.getUserData() == "r_attackArea") {
-                    unit.whoCanNotAttack = (String) fixtureA.getBody().getUserData();
+                    unit.whoCanNotAttack.add((String) fixtureA.getBody().getUserData());
                 } else {
-                    unit.whoCanNotAttack = (String) fixtureB.getBody().getUserData();
+                    unit.whoCanNotAttack.add((String) fixtureB.getBody().getUserData());
                 }
         }
         if ((fixtureA.getUserData() == "l_attackArea" && fixtureB.getUserData() == "Player" || fixtureB.getUserData() == "l_attackArea" && fixtureA.getUserData() == "Player")){
                 if (fixtureA.getUserData() == "l_attackArea") {
-                    unit.whoCanNotAttack = (String) fixtureA.getBody().getUserData();
+                    unit.whoCanNotAttack.add((String) fixtureA.getBody().getUserData());
                 } else {
-                    unit.whoCanNotAttack = (String) fixtureB.getBody().getUserData();
+                    unit.whoCanNotAttack.add((String) fixtureB.getBody().getUserData());
                 }
         }
         if (fixtureA.getUserData() == "Player" && fixtureB.getUserData() == "Enemy" || fixtureB.getUserData() == "Player" && fixtureA.getUserData() == "Enemy"){
                 if (fixtureA.getUserData() == "Enemy") {
-                    unit.whoCanNotAttack = (String) fixtureA.getBody().getUserData();
+                    unit.whoCanNotAttack.add((String) fixtureA.getBody().getUserData());
                 } else {
-                    unit.whoCanNotAttack = (String) fixtureB.getBody().getUserData();
+                    unit.whoCanNotAttack.add((String) fixtureB.getBody().getUserData());
                 }
         }
     }

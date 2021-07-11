@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.tns.Const;
 import com.mygdx.tns.Dialog;
 import com.mygdx.tns.GameController;
+import com.mygdx.tns.MainClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class Npc_Mael extends Npc{
     public List<Texture> Mael_dialogImage;
 
     public Npc_Mael(World world, Vector2 pos){
-        dialogPos = DialogPos;
+        dialogPos = 0;
 
         isSet = true;
 
@@ -158,7 +159,11 @@ public class Npc_Mael extends Npc{
         else Mael_dialog.add("Мне она не к чему, мне нужна лишь моя святыня.");
         if (!Const.smallForm) Mael_dialog.add("Я был избранным, это по праву принадлежит мне.");
         else Mael_dialog.add("Но я был рождён таким, я не хочу расставаться с силой.");
-        Mael_dialog.add("В любом случае я хочу её забрать назад, \n приготовся к смерти!");
+        Mael_dialog.add("В любом случае я хочу её забрать назад, \n но дам тебе один шанс!");
+        Mael_dialog.add("Если сможешь победить меня, то сила твоя.");
+        Mael_dialog.add("Учти ты уже не сможешь вернуться.");
+        Mael_dialog.add("Я отмотаю время до 17:00, \n ведь я хочу ощутить на себе всю силу твоего солнца!");
+        Mael_dialog.add("Готов?");
         Mael_dialog.add("");
     }
 
@@ -174,6 +179,10 @@ public class Npc_Mael extends Npc{
         if (!Const.smallForm) Mael_dialogImage.add(new Texture("DialogImage\\eskanor_sf_1.png"));
         else Mael_dialogImage.add(new Texture("DialogImage\\eskanor_s_1.png"));
         Mael_dialogImage.add(new Texture("DialogImage\\mael2.png"));
+        Mael_dialogImage.add(new Texture("DialogImage\\mael3.png"));
         Mael_dialogImage.add(new Texture("DialogImage\\mael2.png"));
+        Mael_dialogImage.add(new Texture("DialogImage\\mael1.png"));
+        Mael_dialogImage.add(new Texture("DialogImage\\mael1.png"));
+        Mael_dialogImage.add(new Texture("DialogImage\\mael1.png"));
     }
 }

@@ -77,9 +77,11 @@ public class InteractiveItem extends Actor implements Interact {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        for (int i = 0; i < items.size(); i++)
+        for (int i = 0; i < items.size(); i++) {
             if (items.get(i).body.getFixtureList().size != 0)
-            items.get(i).draw(batch, parentAlpha);
+                items.get(i).draw(batch, parentAlpha);
+        }
+        finish.draw(batch, parentAlpha);
     }
 
     private List<Vector2> findPositions(TiledMap tiledMap, float density, String layerName) {

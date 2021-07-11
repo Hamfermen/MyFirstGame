@@ -1,6 +1,7 @@
 package com.mygdx.tns.Screens.Info;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
@@ -65,7 +66,7 @@ public class Merlin_Info implements Screen {
 
         background = new Texture("background_info.png");
 
-        back = new ButtonsforScreen(mainClass.menuScreen, false, false, "Play.png", mainClass);
+        back = new ButtonsforScreen(mainClass.menuScreen, false, false, "Play.png", mainClass, false);
         back.setSize(280 * Const.SizeX, 280 * Const.SizeY);
         back.setPosition(900 * Const.SizeX, 50 * Const.SizeY);
 
@@ -95,6 +96,8 @@ public class Merlin_Info implements Screen {
 
         merlin_info.draw();
         merlin_info.act();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) mainClass.setScreen(mainClass.menuScreen);
 
         if (!music.isPlaying()) music.play();
     }

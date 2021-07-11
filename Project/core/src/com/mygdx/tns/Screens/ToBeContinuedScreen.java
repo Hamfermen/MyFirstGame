@@ -69,10 +69,10 @@ public class ToBeContinuedScreen implements Screen {
 
         if (load){
             MyPreference.pref.clear();
-            MyPreference.setIsNewPreference(false);
-            MyPreference.setNewgame(true);
             MyPreference.setIsNewGame(true);
             MyPreference.setIsNewLevel(true);
+
+            mainClass.clearSaves();
 
             load = false;
 
